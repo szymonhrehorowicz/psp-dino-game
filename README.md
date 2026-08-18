@@ -1,6 +1,8 @@
 # PSP Game
 
-## Building
+## Development
+
+### Building
 
 Run `build.sh` to build the software. This script consists of:
 
@@ -11,7 +13,7 @@ psp-cmake ..
 make
 ```
 
-## Run in emulator
+### Run in emulator
 
 Programs can be run on desktop in emulated environment provided by "PPSSPP" with the `run.sh` script, which consists of:
 
