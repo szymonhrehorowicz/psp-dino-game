@@ -11,7 +11,7 @@ PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_USER);
 
 int main(void)
 {
-    exit_init();
+    PS::System::exit_init();
 
     pspDebugScreenInit();
     while (1)

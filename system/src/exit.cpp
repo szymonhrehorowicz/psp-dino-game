@@ -3,6 +3,9 @@
 #include "psploadexec.h"
 #include "pspthreadman.h"
 
+namespace PS::System
+{
+
 int exit_callback(int arg1, int arg2, void *common)
 {
     sceKernelExitGame();
@@ -31,3 +34,5 @@ int exit_init(void)
 
     return thread_id;
 }
+
+} // namespace PS::System
