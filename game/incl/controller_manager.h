@@ -28,6 +28,15 @@ class Controller_Manager
 
             if (has_changed)
             {
+                if (button.second.detector.is_rising())
+                {
+                    button.second.pressed_signal.emit();
+                }
+                else
+                {
+                    button.second.released_signal.emit();
+                }
+
                 button.second.signal.emit(state);
             }
         }
@@ -63,6 +72,28 @@ class Controller_Manager
         assert(false && "Button ID not found");
     }
 
+    Library::Signal<> &on_button_pressed(PspCtrlButtons button_id)
+    {
+        auto const &button = m_buttons.find(button_id);
+        if (button != m_buttons.end())
+        {
+            return button->second.pressed_signal;
+        }
+
+        assert(false && "Button ID not found");
+    }
+
+    Library::Signal<> &on_button_released(PspCtrlButtons button_id)
+    {
+        auto const &button = m_buttons.find(button_id);
+        if (button != m_buttons.end())
+        {
+            return button->second.released_signal;
+        }
+
+        assert(false && "Button ID not found");
+    }
+
     Library::Signal<System::Analog_Stick> &on_analog_change()
     {
         return m_analog_stick.signal;
@@ -85,6 +116,8 @@ class Controller_Manager
     {
         Library::Edge_Detector detector{};
         Library::Signal<bool> signal{};
+        Library::Signal<> pressed_signal{};
+        Library::Signal<> released_signal{};
     };
 
     struct Tracked_Analog_Stick

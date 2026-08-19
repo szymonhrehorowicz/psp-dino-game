@@ -1,4 +1,5 @@
 #include "controller_manager.h"
+#include "player.h"
 #include "pspmoduleinfo.h"
 #include "pspthreadman.h"
 #include "system/exit.h"
@@ -19,25 +20,13 @@ int main(void)
     // Controls
     PS::Game::Controller_Manager controller_manager{};
 
-    controller_manager.on_button_change(PspCtrlButtons::PSP_CTRL_CROSS).connect([](bool state) {
-        if (state)
-        {
-            pspDebugScreenPrintf("Cross button was pressed!\n");
-        }
-        else
-        {
-            pspDebugScreenPrintf("Cross button was released!\n");
-        }
-    });
+    // Actors
+    PS::Game::Player player{};
 
-    controller_manager.on_analog_change().connect(
-        [](PS::System::Analog_Stick stick) { pspDebugScreenPrintf("X Y changed to: {%3d, %3d}\n", stick.x, stick.y); });
+    // Scene
 
-    controller_manager.on_analog_x_change().connect(
-        [](PS::System::Analog_Stick stick) { pspDebugScreenPrintf("X changed to: %3d\n", stick.x); });
-
-    controller_manager.on_analog_y_change().connect(
-        [](PS::System::Analog_Stick stick) { pspDebugScreenPrintf("Y changed to: %3d\n", stick.y); });
+    // Signals
+    controller_manager.on_button_pressed(PspCtrlButtons::PSP_CTRL_CROSS).connect(&player, &PS::Game::Player::jump);
 
     while (1)
     {
@@ -46,48 +35,6 @@ int main(void)
 
         // Update pad
         controller_manager.update();
-
-        // auto const analog_stick = controller.get_stick();
-        // pspDebugScreenPrintf("Analog X = %3d\n", analog_stick.x);
-        // pspDebugScreenPrintf("Analog Y = %3d\n", analog_stick.y);
-
-        // Is any button pressed
-        // if (controller.is_any_button_pressed())
-        // {
-        //     if (controller.get_button(PSP_CTRL_SQUARE))
-        //     {
-        //         pspDebugScreenPrintf("Square\n");
-        //     }
-        //     if (controller.get_button(PSP_CTRL_TRIANGLE))
-        //     {
-        //         pspDebugScreenPrintf("Triangle\n");
-        //     }
-        //     if (controller.get_button(PSP_CTRL_CIRCLE))
-        //     {
-        //         pspDebugScreenPrintf("Circle\n");
-        //     }
-        //     if (controller.get_button(PSP_CTRL_CROSS))
-        //     {
-        //         pspDebugScreenPrintf("Cross\n");
-        //     }
-
-        //     if (controller.get_button(PSP_CTRL_UP))
-        //     {
-        //         pspDebugScreenPrintf("Up direction pad pressed! \n");
-        //     }
-        //     if (controller.get_button(PSP_CTRL_DOWN))
-        //     {
-        //         pspDebugScreenPrintf("Down direction pad pressed! \n");
-        //     }
-        //     if (controller.get_button(PSP_CTRL_LEFT))
-        //     {
-        //         pspDebugScreenPrintf("Left direction pad pressed! \n");
-        //     }
-        //     if (controller.get_button(PSP_CTRL_RIGHT))
-        //     {
-        //         pspDebugScreenPrintf("Right direction pad pressed! \n");
-        //     }
-        // }
 
         sceDisplayWaitVblankStart();
     }
