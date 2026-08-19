@@ -6,6 +6,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 set(CXX_STANDARD 17 REQUIRED)
 
 add_subdirectory(system)
+add_subdirectory(library)
 
 add_executable(${PROJECT_NAME} ./game/src/main.cpp)
 
@@ -15,6 +16,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     system
+    library
     pspdebug
     pspdisplay
     pspge

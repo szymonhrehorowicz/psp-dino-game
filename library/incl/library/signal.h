@@ -7,6 +7,11 @@
 namespace PS::Library
 {
 
+/**
+ * @brief Signals are a way to notify listeners when something happens
+ *
+ * @tparam Args
+ */
 template <typename... Args> class Signal
 {
   public:

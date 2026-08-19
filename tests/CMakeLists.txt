@@ -12,7 +12,10 @@ find_package(GTest REQUIRED)
 
 add_subdirectory(../library library)
 
-add_executable(${PROJECT_NAME} dummy_test.cpp)
+add_executable(${PROJECT_NAME} 
+    signal_test.cpp
+    edge_detector_test.cpp
+)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     library

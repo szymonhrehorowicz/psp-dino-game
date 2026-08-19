@@ -9,6 +9,16 @@ struct Analog_Stick
 {
     unsigned char x{};
     unsigned char y{};
+
+    bool operator==(const Analog_Stick &other) const
+    {
+        return (x == other.x) && (y == other.y);
+    }
+
+    bool operator!=(const Analog_Stick &other) const
+    {
+        return (x != other.x) || (y != other.y);
+    }
 };
 
 /**
