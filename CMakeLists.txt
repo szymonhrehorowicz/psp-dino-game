@@ -7,10 +7,10 @@ set(CXX_STANDARD 17 REQUIRED)
 
 add_subdirectory(system)
 
-add_executable(${PROJECT_NAME} ./src/main.cpp)
+add_executable(${PROJECT_NAME} ./game/src/main.cpp)
 
 target_include_directories(${PROJECT_NAME} PRIVATE
-    ./incl
+    ./game/incl
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
@@ -18,6 +18,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     pspdebug
     pspdisplay
     pspge
+    pspctrl
 )
 
 create_pbp_file(

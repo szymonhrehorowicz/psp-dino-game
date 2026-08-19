@@ -22,3 +22,14 @@ Programs can be run on desktop in emulated environment provided by "PPSSPP" with
 flatpak run org.ppsspp.PPSSPP 
 ./build/EBOOT.PBP
 ```
+
+#### Controls
+
+- up - up
+- down - down
+- left - left
+- right - right
+- O - x
+- X - z
+- [  ] - a
+- /\ - s

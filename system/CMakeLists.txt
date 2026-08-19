@@ -1,5 +1,6 @@
 add_library(system STATIC
     src/exit.cpp
+    src/controller.cpp
 )
 
 target_include_directories(system
@@ -13,4 +14,5 @@ target_link_libraries(system
         pspdebug
         pspdisplay
         pspge
+        pspctrl
 )

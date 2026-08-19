@@ -1,4 +1,4 @@
-#include "exit.h"
+#include "system/exit.h"
 
 #include "psploadexec.h"
 #include "pspthreadman.h"
