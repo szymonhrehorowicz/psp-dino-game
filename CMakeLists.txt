@@ -10,6 +10,12 @@ add_subdirectory(library)
 
 add_executable(${PROJECT_NAME} ./game/src/main.cpp)
 
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/grass.png
+    ${CMAKE_CURRENT_BINARY_DIR}/grass.png
+    COPYONLY
+)
+
 target_include_directories(${PROJECT_NAME} PRIVATE
     ./game/incl
 )
@@ -21,6 +27,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     pspdisplay
     pspge
     pspctrl
+    pspgu
 )
 
 create_pbp_file(

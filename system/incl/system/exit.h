@@ -10,4 +10,6 @@ namespace PS::System
  */
 int exit_init(void);
 
+extern int running;
+
 } // namespace PS::System

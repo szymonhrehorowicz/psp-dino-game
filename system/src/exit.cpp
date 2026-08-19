@@ -6,9 +6,11 @@
 namespace PS::System
 {
 
+int running = 0;
+
 int exit_callback(int arg1, int arg2, void *common)
 {
-    sceKernelExitGame();
+    running = 0;
 
     return 0;
 }
@@ -31,6 +33,8 @@ int exit_init(void)
     {
         sceKernelStartThread(thread_id, 0, 0);
     }
+
+    running = 1;
 
     return thread_id;
 }

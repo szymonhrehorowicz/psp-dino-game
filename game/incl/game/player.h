@@ -8,9 +8,8 @@ namespace PS::Game
 class Player
 {
   public:
-    void jump()
-    {
-        pspDebugScreenPrintf("Jumping!");
+    void jump() {
+        // pspDebugScreenPrintf("Jumping!");
     };
 
   private:
