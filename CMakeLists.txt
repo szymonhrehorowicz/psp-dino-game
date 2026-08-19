@@ -10,6 +10,8 @@ add_subdirectory(library)
 
 add_executable(${PROJECT_NAME} ./game/src/main.cpp)
 
+find_package(SDL3 REQUIRED CONFIG REQUIRED COMPONENTS SDL3)
+
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/grass.png
     ${CMAKE_CURRENT_BINARY_DIR}/grass.png
@@ -27,7 +29,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     pspdisplay
     pspge
     pspctrl
-    pspgu
+
+    SDL3::SDL3
 )
 
 create_pbp_file(

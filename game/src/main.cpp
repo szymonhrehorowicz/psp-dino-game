@@ -1,168 +1,120 @@
 #include "game/controller_manager.h"
 #include "game/player.h"
-#include "pspmoduleinfo.h"
-#include "pspthreadman.h"
-#include "system/exit.h"
-#include <memory.h>
-#include <pspctrl.h>
-#include <pspdebug.h>
-#include <pspdisplay.h>
-#include <pspgu.h>
-#include <pspuser.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
-
-// Required PSP_MODULE_INFO
-PSP_MODULE_INFO("Game", 0, 1, 0);
-PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_USER | PSP_THREAD_ATTR_VFPU);
-
-// Screen
-#define BUFFER_WIDTH 512
-#define BUFFER_HEIGHT 272
-#define SCREEN_WIDTH 480
-#define SCREEN_HEIGHT BUFFER_HEIGHT
-
-// Textures
-typedef struct
+int main(int argc, char *argv[])
 {
-    float u, v;
-    uint32_t colour;
-    float x, y, z;
-} Texture_Vertex;
+    // This prevents compiler warnings
+    // We don't actually need these variables, but they do need to be there so SDL_main works
+    (void)argc;
+    (void)argv;
 
-typedef struct
-{
-    int width, height;
-    uint32_t *data;
-} Texture;
+    // Initialize sdl
+    if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD))
+    {
+        SDL_Log("Couldn't initialize SDL: %s", SDL_GetError());
+        return 1;
+    }
 
-char list[0x20000] __attribute__((aligned(64)));
+    SDL_Window *window = NULL;
+    SDL_Renderer *renderer = NULL;
+    if (!SDL_CreateWindowAndRenderer("window", 480, 272, 0, &window, &renderer))
+    {
+        SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
+        SDL_Quit();
+        return 2;
+    }
 
-void *fbp0;
-void *fbp1;
+    // Load the texture
+    SDL_Surface *pixels = SDL_LoadPNG("grass.png");
+    if (!pixels)
+    {
+        SDL_Log("Couldn't load grass.png: %s", SDL_GetError());
+        SDL_Quit();
+        return 3;
+    }
+    SDL_Texture *sprite = SDL_CreateTextureFromSurface(renderer, pixels);
+    SDL_DestroySurface(pixels);
+    if (!sprite)
+    {
+        SDL_Log("Couldn't create texture: %s", SDL_GetError());
+        SDL_Quit();
+        return 4;
+    }
 
-void init_gu()
-{
-    sceGuInit();
-
-    fbp0 = guGetStaticVramBuffer(BUFFER_WIDTH, BUFFER_HEIGHT, GU_PSM_8888);
-    fbp1 = guGetStaticVramBuffer(BUFFER_WIDTH, BUFFER_HEIGHT, GU_PSM_8888);
-
-    // Set up buffers
-    sceGuStart(GU_DIRECT, list);
-    sceGuDrawBuffer(GU_PSM_8888, fbp0, BUFFER_WIDTH);
-    sceGuDispBuffer(SCREEN_WIDTH, SCREEN_HEIGHT, fbp1, BUFFER_WIDTH);
-
-    // We do not care about the depth buffer in this example
-    sceGuDepthBuffer(fbp0, 0);   // Set depth buffer to a length of 0
-    sceGuDisable(GU_DEPTH_TEST); // Disable depth testing
-
-    // Set up viewport
-    sceGuOffset(2048 - (SCREEN_WIDTH / 2), 2048 - (SCREEN_HEIGHT / 2));
-    sceGuViewport(2048, 2048, SCREEN_WIDTH, SCREEN_HEIGHT);
-    sceGuEnable(GU_SCISSOR_TEST);
-    sceGuScissor(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-    // Start a new frame and enable the display
-    sceGuFinish();
-    sceGuDisplay(GU_TRUE);
-}
-
-void end_gu()
-{
-    sceGuDisplay(GU_FALSE);
-    sceGuTerm();
-}
-
-void start_frame()
-{
-    sceGuStart(GU_DIRECT, list);
-    sceGuClearColor(0xFFFFFFFF); // White background
-    sceGuClear(GU_COLOR_BUFFER_BIT);
-}
-
-void end_frame()
-{
-    sceGuFinish();
-    sceGuSync(0, 0);
-    sceDisplayWaitVblankStart();
-    sceGuSwapBuffers();
-}
-
-Texture *load_texture(const char *filename)
-{
-    Texture *texture = (Texture *)calloc(1, sizeof(Texture));
-
-    texture->data = (uint32_t *)stbi_load(filename, &(texture->width), &(texture->height), NULL, STBI_rgb_alpha);
-
-    // Make sure the texture cache is reloaded
-    sceKernelDcacheWritebackInvalidateAll();
-
-    return texture;
-}
-
-void draw_texture(Texture *texture, float x, float y, float w, float h)
-{
-    static Texture_Vertex vertices[2];
-
-    vertices[0].u = 0.0f;
-    vertices[0].v = 0.0f;
-    vertices[0].colour = 0xFFFFFFFF;
-    vertices[0].x = x;
-    vertices[0].y = y;
-    vertices[0].z = 0.0f;
-
-    vertices[1].u = w;
-    vertices[1].v = h;
-    vertices[1].colour = 0xFFFFFFFF;
-    vertices[1].x = x + w;
-    vertices[1].y = y + h;
-    vertices[1].z = 0.0f;
-
-    sceGuTexMode(GU_PSM_8888, 0, 0, GU_FALSE);
-    sceGuTexFunc(GU_TFX_REPLACE, GU_TCC_RGB);
-    sceGuTexImage(0, texture->width, texture->height, texture->width, texture->data);
-
-    sceGuEnable(GU_TEXTURE_2D);
-    sceGuDrawArray(GU_SPRITES, GU_COLOR_8888 | GU_TEXTURE_32BITF | GU_VERTEX_32BITF | GU_TRANSFORM_2D, 2, 0, vertices);
-    sceGuDisable(GU_TEXTURE_2D);
-}
-
-int main(void)
-{
-    PS::System::exit_init();
-    pspDebugScreenInit();
-    init_gu();
-
-    // Controls
-    PS::Game::Controller_Manager controller_manager{};
+    // Store the dimensions of the texture
+    SDL_FRect sprite_rect;
+    SDL_GetTextureSize(sprite, &sprite_rect.w, &sprite_rect.h);
 
     // Actors
     PS::Game::Player player{};
 
+    // Set the position to draw to in the middle of the screen
+    float const x = 480.0f / 2.0f - sprite_rect.w / 2.0f;
+    float const y = 272.0f / 2.0f - sprite_rect.h / 2.0f;
+    player.set_position({x, y});
+
+    sprite_rect.x = x;
+    sprite_rect.y = y;
+
+    // Controls
+    PS::Game::Controller_Manager controller_manager{};
+
     // Scene
-    Texture *texture = load_texture("grass.png");
 
     // Signals
     controller_manager.on_button_pressed(PspCtrlButtons::PSP_CTRL_CROSS).connect(&player, &PS::Game::Player::jump);
 
-    while (PS::System::running)
+    int running = 1;
+    SDL_Event event;
+    while (running)
     {
-        start_frame();
 
-        draw_texture(texture, SCREEN_WIDTH / 2 - (texture->width / 2), SCREEN_HEIGHT / 2 - (texture->height / 2),
-                     static_cast<float>(texture->width), static_cast<float>(texture->height));
+        // Process input
+        if (SDL_PollEvent(&event))
+        {
+            switch (event.type)
+            {
+            case SDL_EVENT_QUIT:
+                // End the loop if the programs is being closed
+                running = 0;
+                break;
+            case SDL_EVENT_GAMEPAD_ADDED:
+                // Connect a controller when it is connected
+                SDL_OpenGamepad(event.cdevice.which);
+                break;
+            case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
+                if (event.gbutton.button == SDL_GAMEPAD_BUTTON_START)
+                {
+                    // Close the program if start is pressed
+                    running = 0;
+                }
+                break;
+            }
+        }
 
-        // Update pad
+        // Game
         controller_manager.update();
+        auto const position = player.get_position();
+        sprite_rect.x = position.x;
+        sprite_rect.y = position.y;
 
-        end_frame();
+        player.animate();
+
+        // Clear the screen
+        SDL_RenderClear(renderer);
+
+        // Draw the 'grass' sprite
+        SDL_RenderTexture(renderer, sprite, NULL, &sprite_rect);
+
+        // Draw everything on a white background
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        SDL_RenderPresent(renderer);
     }
-
-    end_gu();
-    stbi_image_free(texture->data);
-    free(texture);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 
     return 0;
 }
