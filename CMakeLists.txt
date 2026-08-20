@@ -11,6 +11,7 @@ add_subdirectory(library)
 add_executable(${PROJECT_NAME} 
     ./game/src/main.cpp
     ./game/src/actions/jump.cpp
+    ./game/src/actions/move_left.cpp
 )
 
 find_package(SDL3 REQUIRED CONFIG REQUIRED COMPONENTS SDL3)
@@ -18,6 +19,12 @@ find_package(SDL3 REQUIRED CONFIG REQUIRED COMPONENTS SDL3)
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/grass.png
     ${CMAKE_CURRENT_BINARY_DIR}/grass.png
+    COPYONLY
+)
+
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/idle.png
+    ${CMAKE_CURRENT_BINARY_DIR}/idle.png
     COPYONLY
 )
 

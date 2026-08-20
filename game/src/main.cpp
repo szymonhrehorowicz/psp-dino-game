@@ -1,6 +1,8 @@
 #include "game/config.h"
 #include "game/controller_manager.h"
+#include "game/obstacle.h"
 #include "game/player.h"
+#include "library/signal.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
@@ -27,35 +29,9 @@ int main(int argc, char *argv[])
         return 2;
     }
 
-    // Load the texture
-    SDL_Surface *pixels = SDL_LoadPNG("grass.png");
-    if (!pixels)
-    {
-        SDL_Log("Couldn't load grass.png: %s", SDL_GetError());
-        SDL_Quit();
-        return 3;
-    }
-    SDL_Texture *sprite = SDL_CreateTextureFromSurface(renderer, pixels);
-    SDL_DestroySurface(pixels);
-    if (!sprite)
-    {
-        SDL_Log("Couldn't create texture: %s", SDL_GetError());
-        SDL_Quit();
-        return 4;
-    }
-
-    // Store the dimensions of the texture
-    SDL_FRect sprite_rect;
-    SDL_GetTextureSize(sprite, &sprite_rect.w, &sprite_rect.h);
-
     // Actors
-    PS::Game::Player player{};
-
-    // Set the position to draw to in the middle of the screen
-    player.set_position({PS::Game::Config::PLAYER_POSITION_X, PS::Game::Config::PLAYER_POSITION_Y});
-
-    sprite_rect.x = PS::Game::Config::PLAYER_POSITION_X;
-    sprite_rect.y = PS::Game::Config::PLAYER_POSITION_Y;
+    PS::Game::Player player{*renderer};
+    PS::Game::Obstacle obstacle{*renderer};
 
     // Controls
     PS::Game::Controller_Manager controller_manager{};
@@ -64,6 +40,8 @@ int main(int argc, char *argv[])
 
     // Signals
     controller_manager.on_button_pressed(PspCtrlButtons::PSP_CTRL_CROSS).connect(&player, &PS::Game::Player::jump);
+    PS::Library::Signal<> game_tick{};
+    game_tick.connect(&obstacle, &PS::Game::Obstacle::move_left);
 
     int running = 1;
     SDL_Event event;
@@ -95,17 +73,17 @@ int main(int argc, char *argv[])
 
         // Game
         controller_manager.update();
-        auto const position = player.get_position();
-        sprite_rect.x = position.x;
-        sprite_rect.y = position.y;
+        game_tick.emit();
 
         player.animate();
+        obstacle.animate();
 
         // Clear the screen
         SDL_RenderClear(renderer);
 
-        // Draw the 'grass' sprite
-        SDL_RenderTexture(renderer, sprite, NULL, &sprite_rect);
+        // Draw Actors
+        SDL_RenderTexture(renderer, player.get_sprite().get_texture(), NULL, player.get_sprite().get_rectangle());
+        SDL_RenderTexture(renderer, obstacle.get_sprite().get_texture(), NULL, obstacle.get_sprite().get_rectangle());
 
         // Draw everything on a white background
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);

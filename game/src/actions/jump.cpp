@@ -1,13 +1,13 @@
 #include "game/actions/jump.h"
 #include "game/config.h"
-#include "game/coordinates.h"
+#include "system/coordinates.h"
 
 namespace PS::Game
 {
 
-Jump_Action::Jump_Action(Position &position) : m_position(position)
+Jump_Action::Jump_Action(System::Position &position) : m_position(position)
 {
-    float const y = m_position.y - Config::JUMP_HEIGHT;
+    float const y = m_position.y - Config::PLAYER_JUMP_HEIGHT;
     m_position = {m_position.x, y};
 };
 

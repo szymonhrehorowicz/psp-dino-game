@@ -1,7 +1,10 @@
 add_library(system STATIC
     src/exit.cpp
     src/controller.cpp
+    src/graphics/sprite.cpp
 )
+
+find_package(SDL3 REQUIRED CONFIG REQUIRED COMPONENTS SDL3)
 
 target_include_directories(system
     PUBLIC
@@ -15,4 +18,6 @@ target_link_libraries(system
         pspdisplay
         pspge
         pspctrl
+
+        SDL3::SDL3
 )

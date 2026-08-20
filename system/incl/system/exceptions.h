@@ -1,0 +1,24 @@
+#pragma once
+
+#include <exception>
+
+namespace PS::System
+{
+
+class Sprite_Exception : public std::exception
+{
+  public:
+    explicit Sprite_Exception(const char *message) : m_message(message)
+    {
+    }
+
+    const char *what() const noexcept override
+    {
+        return m_message;
+    }
+
+  private:
+    const char *m_message;
+};
+
+} // namespace PS::System

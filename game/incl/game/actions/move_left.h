@@ -13,12 +13,12 @@ struct Position;
 namespace Game
 {
 
-class Jump_Action : public Library::Action
+class Move_Left_Action : public Library::Action
 {
   public:
-    Jump_Action(struct System::Position &position);
+    Move_Left_Action(struct System::Position &position);
 
-    void execute() final;
+    void execute() final {};
 
   private:
     System::Position &m_position;
