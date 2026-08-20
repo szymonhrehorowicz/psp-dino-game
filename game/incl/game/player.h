@@ -1,35 +1,42 @@
 #pragma once
 
-#include "pspdebug.h"
+#include "actions/jump.h"
+#include "coordinates.h"
+#include "game/config.h"
+#include "library/action.h"
+#include <memory>
+#include <vector>
 
 namespace PS::Game
 {
-
-struct Position
-{
-    float x{};
-    float y{};
-};
 
 class Player
 {
     static constexpr float ground_level{200};
 
   public:
+    Player() = default;
+
     void animate()
     {
-        if (m_position.y < ground_level)
+        if (m_actions.empty())
         {
-            m_position.y += 1;
+            return;
+        }
+
+        auto const &action = m_actions.front();
+        action->execute();
+
+        if (action->is_finished())
+        {
+            m_actions.erase(m_actions.begin());
         }
     }
 
     void jump()
     {
-        // pspDebugScreenPrintf("Jumping!");
-        float const y = m_position.y - 50;
-        m_position = {m_position.x, y};
-    };
+        m_actions.push_back(std::make_unique<Jump_Action>(m_position));
+    }
 
     void set_position(Position position)
     {
@@ -42,7 +49,12 @@ class Player
     }
 
   private:
-    Position m_position{200, 200};
+    Position m_position{
+        Config::PLAYER_POSITION_X,
+        Config::PLAYER_POSITION_Y,
+    };
+
+    std::vector<std::unique_ptr<Library::Action>> m_actions{};
 };
 
 }; // namespace PS::Game

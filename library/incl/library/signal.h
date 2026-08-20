@@ -1,3 +1,14 @@
+/**
+ * @file signal.h
+ * @author Szymon Hrehorowicz
+ * @brief
+ * @version 0.1
+ * @date 2026-08-20
+ *
+ * @copyright Copyright (c) 2026
+ *
+ */
+
 #pragma once
 
 #include <functional>

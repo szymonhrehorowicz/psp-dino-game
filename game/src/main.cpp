@@ -1,3 +1,4 @@
+#include "game/config.h"
 #include "game/controller_manager.h"
 #include "game/player.h"
 #include <SDL3/SDL.h>
@@ -51,12 +52,10 @@ int main(int argc, char *argv[])
     PS::Game::Player player{};
 
     // Set the position to draw to in the middle of the screen
-    float const x = 480.0f / 2.0f - sprite_rect.w / 2.0f;
-    float const y = 272.0f / 2.0f - sprite_rect.h / 2.0f;
-    player.set_position({x, y});
+    player.set_position({PS::Game::Config::PLAYER_POSITION_X, PS::Game::Config::PLAYER_POSITION_Y});
 
-    sprite_rect.x = x;
-    sprite_rect.y = y;
+    sprite_rect.x = PS::Game::Config::PLAYER_POSITION_X;
+    sprite_rect.y = PS::Game::Config::PLAYER_POSITION_Y;
 
     // Controls
     PS::Game::Controller_Manager controller_manager{};

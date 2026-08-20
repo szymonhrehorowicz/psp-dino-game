@@ -8,7 +8,10 @@ set(CXX_STANDARD 17 REQUIRED)
 add_subdirectory(system)
 add_subdirectory(library)
 
-add_executable(${PROJECT_NAME} ./game/src/main.cpp)
+add_executable(${PROJECT_NAME} 
+    ./game/src/main.cpp
+    ./game/src/actions/jump.cpp
+)
 
 find_package(SDL3 REQUIRED CONFIG REQUIRED COMPONENTS SDL3)
 
