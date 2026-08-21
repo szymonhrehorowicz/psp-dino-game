@@ -23,8 +23,18 @@ class Action
   public:
     virtual ~Action() = default;
 
+    /**
+     * @brief Execute defined action
+     *
+     */
     virtual void execute() = 0;
 
+    /**
+     * @brief Informs about the state of the action
+     *
+     * @return true - if finished
+     * @return false - otherwise
+     */
     bool is_finished()
     {
         return m_is_finished;

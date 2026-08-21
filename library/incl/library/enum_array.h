@@ -1,3 +1,14 @@
+/**
+ * @file enum_array.h
+ * @author Szymon Hrehorowicz
+ * @brief
+ * @version 0.1
+ * @date 2026-08-21
+ *
+ * @copyright Copyright (c) 2026
+ *
+ */
+
 #pragma once
 
 #include <array>
@@ -8,6 +19,14 @@
 namespace PS::Library
 {
 
+/**
+ * @brief Array with elements accessible only via
+ * scoped enumeration (`enum class`).
+ *
+ * @tparam Enum - scoped enumeration to be used as a means of accessing
+ * elements of an array. Must have `LAST` element.
+ * @tparam Value - type of stored data.
+ */
 template <typename Enum, typename Value> class Enum_Array
 {
     static_assert(std::is_enum_v<Enum>, "Enum_Array requires an enum type");

@@ -19,7 +19,7 @@ namespace PS::Library
 {
 
 /**
- * @brief Signals are a way to notify listeners when something happens
+ * @brief Signals are a way to notify listeners when something happens.
  *
  * @tparam Args
  */

@@ -1,3 +1,14 @@
+/**
+ * @file controller_manager.h
+ * @author Szymon Hrehorowicz
+ * @brief
+ * @version 0.1
+ * @date 2026-08-21
+ *
+ * @copyright Copyright (c) 2026
+ *
+ */
+
 #pragma once
 
 #include "library/edge_detector.h"
@@ -61,6 +72,12 @@ class Controller_Manager
         m_analog_stick.stick = stick;
     }
 
+    /**
+     * @brief Get access to signal raised whenever specific button state changes.
+     *
+     * @param button_id - identifier of a specific button.
+     * @return Library::Signal<bool>&
+     */
     Library::Signal<bool> &on_button_change(PspCtrlButtons button_id)
     {
         auto const &button = m_buttons.find(button_id);
@@ -72,6 +89,12 @@ class Controller_Manager
         assert(false && "Button ID not found");
     }
 
+    /**
+     * @brief Get access to signal raised whenever specific button is pressed.
+     *
+     * @param button_id - identifier of a specific button.
+     * @return Library::Signal<>&
+     */
     Library::Signal<> &on_button_pressed(PspCtrlButtons button_id)
     {
         auto const &button = m_buttons.find(button_id);
@@ -83,6 +106,12 @@ class Controller_Manager
         assert(false && "Button ID not found");
     }
 
+    /**
+     * @brief Get access to signal raised whenever specific button is released.
+     *
+     * @param button_id - identifier of a specific button.
+     * @return Library::Signal<>&
+     */
     Library::Signal<> &on_button_released(PspCtrlButtons button_id)
     {
         auto const &button = m_buttons.find(button_id);
@@ -94,16 +123,31 @@ class Controller_Manager
         assert(false && "Button ID not found");
     }
 
+    /**
+     * @brief Get access to signal raised whenever analog stick position changes.
+     *
+     * @return Library::Signal<System::Analog_Stick>&
+     */
     Library::Signal<System::Analog_Stick> &on_analog_change()
     {
         return m_analog_stick.signal;
     }
 
+    /**
+     * @brief Get access to signal raised whenever X-position of analog stick changes.
+     *
+     * @return Library::Signal<System::Analog_Stick>&
+     */
     Library::Signal<System::Analog_Stick> &on_analog_x_change()
     {
         return m_analog_stick.x_signal;
     }
 
+    /**
+     * @brief Get access to signal raised whenever Y-position of analog stick changes.
+     *
+     * @return Library::Signal<System::Analog_Stick>&
+     */
     Library::Signal<System::Analog_Stick> &on_analog_y_change()
     {
         return m_analog_stick.y_signal;
