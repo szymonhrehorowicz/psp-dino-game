@@ -26,4 +26,13 @@ constexpr char const *OBSTACLE_SPRITE = "grass.png";
 static_assert((PLAYER_JUMP_HEIGHT % GRAVITY) == 0);
 static_assert((OBSTACLE_POSITION_X % OBSTACLE_SPEED) == 0);
 
+// Graphics
+enum class Sprites
+{
+    PLAYER = 0,
+    OBSTACLE = 1,
+
+    LAST = 2
+};
+
 } // namespace PS::Game::Config

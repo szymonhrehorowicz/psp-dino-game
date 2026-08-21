@@ -3,11 +3,14 @@
 #include "game/obstacle.h"
 #include "game/player.h"
 #include "library/signal.h"
+#include "system/graphics/sprite_manager.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
 int main(int argc, char *argv[])
 {
+    using namespace PS;
+
     // This prevents compiler warnings
     // We don't actually need these variables, but they do need to be there so SDL_main works
     (void)argc;
@@ -30,18 +33,23 @@ int main(int argc, char *argv[])
     }
 
     // Actors
-    PS::Game::Player player{*renderer};
-    PS::Game::Obstacle obstacle{*renderer};
+    Game::Player player{*renderer};
+    Game::Obstacle obstacle{*renderer};
 
     // Controls
-    PS::Game::Controller_Manager controller_manager{};
+    Game::Controller_Manager controller_manager{};
 
     // Scene
+    System::Graphics::Sprite_Manager<Game::Config::Sprites> sprite_manager{*renderer};
+    sprite_manager.make_sprite(Game::Config::Sprites::PLAYER, Game::Config::PLAYER_SPRITE,
+                               {Game::Config::PLAYER_POSITION_X, Game::Config::PLAYER_POSITION_Y});
+    sprite_manager.make_sprite(Game::Config::Sprites::OBSTACLE, Game::Config::OBSTACLE_SPRITE,
+                               {Game::Config::OBSTACLE_POSITION_X, Game::Config::OBSTACLE_POSITION_Y});
 
     // Signals
-    controller_manager.on_button_pressed(PspCtrlButtons::PSP_CTRL_CROSS).connect(&player, &PS::Game::Player::jump);
-    PS::Library::Signal<> game_tick{};
-    game_tick.connect(&obstacle, &PS::Game::Obstacle::move_left);
+    controller_manager.on_button_pressed(PspCtrlButtons::PSP_CTRL_CROSS).connect(&player, &Game::Player::jump);
+    Library::Signal<> game_tick{};
+    game_tick.connect(&obstacle, &Game::Obstacle::move_left);
 
     int running = 1;
     SDL_Event event;

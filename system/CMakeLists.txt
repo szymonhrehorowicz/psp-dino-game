@@ -20,4 +20,5 @@ target_link_libraries(system
         pspctrl
 
         SDL3::SDL3
+        library
 )

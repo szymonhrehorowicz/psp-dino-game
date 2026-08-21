@@ -15,6 +15,7 @@ add_subdirectory(../library library)
 add_executable(${PROJECT_NAME} 
     signal_test.cpp
     edge_detector_test.cpp
+    enum_array_test.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE

@@ -3,10 +3,11 @@ cmake_minimum_required(VERSION 3.11)
 project(hello)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
-set(CXX_STANDARD 17 REQUIRED)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_subdirectory(system)
 add_subdirectory(library)
+add_subdirectory(system)
 
 add_executable(${PROJECT_NAME} 
     ./game/src/main.cpp

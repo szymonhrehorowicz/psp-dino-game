@@ -11,6 +11,8 @@ class Sprite
   public:
     explicit Sprite(SDL_Renderer &renderer, const char *file, Position position);
 
+    ~Sprite();
+
     void set_position(Position position);
 
     SDL_Texture *get_texture() const

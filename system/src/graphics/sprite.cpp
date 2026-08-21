@@ -32,6 +32,14 @@ Sprite::Sprite(SDL_Renderer &renderer, const char *file, Position position)
     }
 }
 
+Sprite::~Sprite()
+{
+    if (m_sprite)
+    {
+        SDL_DestroyTexture(m_sprite);
+    }
+}
+
 void Sprite::set_position(Position position)
 {
     m_rectangle.x = position.x;
