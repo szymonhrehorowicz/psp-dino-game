@@ -1,4 +1,5 @@
 #include "SDL3/SDL_rect.h"
+#include "SDL3/SDL_render.h"
 #include "game/config.h"
 #include "game/controller_manager.h"
 #include "game/obstacle.h"
@@ -7,6 +8,8 @@
 #include "system/graphics/sprite_manager.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
+
+void render_background(SDL_Renderer *renderer);
 
 int main(int argc, char *argv[])
 {
@@ -26,7 +29,8 @@ int main(int argc, char *argv[])
 
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
-    if (!SDL_CreateWindowAndRenderer("window", 480, 272, 0, &window, &renderer))
+    if (!SDL_CreateWindowAndRenderer("window", Game::Config::SCREEN_WIDTH, Game::Config::SCREEN_HEIGHT, 0, &window,
+                                     &renderer))
     {
         SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
         SDL_Quit();
@@ -112,8 +116,8 @@ int main(int argc, char *argv[])
         obstacle2_rectangle.x = obstacle_2.x;
         obstacle2_rectangle.y = obstacle_2.y;
 
-        // Clear the screen
-        SDL_RenderClear(renderer);
+        // [RENDERING]
+        render_background(renderer);
 
         // Draw Actors
         auto &player_sprite = sprite_manager.get_sprite(Game::Config::Sprites::PLAYER);
@@ -122,8 +126,6 @@ int main(int argc, char *argv[])
         SDL_RenderTexture(renderer, obstacle_sprite.get_texture(), NULL, &obstacle1_rectangle);
         SDL_RenderTexture(renderer, obstacle_sprite.get_texture(), NULL, &obstacle2_rectangle);
 
-        // Draw everything on a white background
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderPresent(renderer);
     }
     SDL_DestroyRenderer(renderer);
@@ -131,4 +133,28 @@ int main(int argc, char *argv[])
     SDL_Quit();
 
     return 0;
+}
+
+void render_sky(SDL_Renderer *renderer)
+{
+    using namespace PS::Game::Config;
+    SDL_SetRenderDrawColor(renderer, SKY_COLOR_R, SKY_COLOR_G, SKY_COLOR_B, SKY_COLOR_A);
+    SDL_RenderClear(renderer);
+}
+
+void render_ground(SDL_Renderer *renderer)
+{
+    using namespace PS::Game::Config;
+    static SDL_FRect const ground_rectangle{0.0F, static_cast<float>(GROUND_LEVEL), static_cast<float>(SCREEN_WIDTH),
+                                            static_cast<float>(SCREEN_HEIGHT - GROUND_LEVEL)};
+
+    SDL_SetRenderDrawColor(renderer, GROUND_COLOR_R, GROUND_COLOR_G, GROUND_COLOR_B, GROUND_COLOR_A);
+    SDL_RenderFillRect(renderer, &ground_rectangle);
+}
+
+void render_background(SDL_Renderer *renderer)
+{
+    render_sky(renderer);
+    SDL_RenderClear(renderer);
+    render_ground(renderer);
 }

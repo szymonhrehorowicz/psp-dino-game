@@ -5,9 +5,21 @@
 namespace PS::Game::Config
 {
 
+// Screen
+constexpr int SCREEN_WIDTH = 480;
+constexpr int SCREEN_HEIGHT = 272;
+
 // World
 constexpr uint16_t GRAVITY = 5;
 constexpr uint16_t GROUND_LEVEL = 200;
+constexpr uint8_t SKY_COLOR_R = 140;
+constexpr uint8_t SKY_COLOR_G = 195;
+constexpr uint8_t SKY_COLOR_B = 255;
+constexpr uint8_t SKY_COLOR_A = 204;
+constexpr uint8_t GROUND_COLOR_R = 0;
+constexpr uint8_t GROUND_COLOR_G = 160;
+constexpr uint8_t GROUND_COLOR_B = 0;
+constexpr uint8_t GROUND_COLOR_A = 255;
 
 // Player
 constexpr uint16_t PLAYER_JUMP_HEIGHT = 50;
