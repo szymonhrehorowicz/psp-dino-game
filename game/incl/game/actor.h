@@ -2,7 +2,6 @@
 
 #include "library/action.h"
 #include "system/coordinates.h"
-#include "system/graphics/sprite.h"
 #include <memory>
 #include <vector>
 
@@ -16,8 +15,7 @@ namespace PS::Game
 class Actor
 {
   public:
-    explicit Actor(SDL_Renderer &renderer, const char *file, System::Position position)
-        : m_position(position), m_sprite(renderer, file, m_position) {};
+    explicit Actor(System::Position position) : m_position(position) {};
 
     virtual void animate()
     {
@@ -33,15 +31,7 @@ class Actor
         {
             m_actions.erase(m_actions.begin());
         }
-
-        m_sprite.set_position(m_position);
     };
-
-    void set_position(System::Position position)
-    {
-        m_position = position;
-        m_sprite.set_position(position);
-    }
 
     System::Position const &get_position() const
     {
@@ -51,16 +41,6 @@ class Actor
     System::Position &get_position()
     {
         return m_position;
-    }
-
-    System::Graphics::Sprite const &get_sprite() const
-    {
-        return m_sprite;
-    }
-
-    System::Graphics::Sprite &get_sprite()
-    {
-        return m_sprite;
     }
 
   protected:
@@ -76,8 +56,6 @@ class Actor
 
   private:
     System::Position m_position;
-    System::Graphics::Sprite m_sprite;
-
     std::vector<std::unique_ptr<Library::Action>> m_actions{};
 };
 

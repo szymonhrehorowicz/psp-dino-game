@@ -11,8 +11,7 @@ namespace PS::Game
 class Player : public Actor
 {
   public:
-    Player(SDL_Renderer &renderer)
-        : Actor(renderer, Config::PLAYER_SPRITE, {Config::PLAYER_POSITION_X, Config::PLAYER_POSITION_Y}) {};
+    Player() : Actor({Config::PLAYER_POSITION_X, Config::PLAYER_POSITION_Y}) {};
 
     void jump()
     {

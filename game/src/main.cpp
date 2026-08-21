@@ -33,8 +33,8 @@ int main(int argc, char *argv[])
     }
 
     // Actors
-    Game::Player player{*renderer};
-    Game::Obstacle obstacle{*renderer};
+    Game::Player player{};
+    Game::Obstacle obstacle{};
 
     // Controls
     Game::Controller_Manager controller_manager{};
@@ -86,12 +86,17 @@ int main(int argc, char *argv[])
         player.animate();
         obstacle.animate();
 
+        sprite_manager.get_sprite(Game::Config::Sprites::PLAYER).set_position(player.get_position());
+        sprite_manager.get_sprite(Game::Config::Sprites::OBSTACLE).set_position(obstacle.get_position());
+
         // Clear the screen
         SDL_RenderClear(renderer);
 
         // Draw Actors
-        SDL_RenderTexture(renderer, player.get_sprite().get_texture(), NULL, player.get_sprite().get_rectangle());
-        SDL_RenderTexture(renderer, obstacle.get_sprite().get_texture(), NULL, obstacle.get_sprite().get_rectangle());
+        auto &player_sprite = sprite_manager.get_sprite(Game::Config::Sprites::PLAYER);
+        auto &obstacle_sprite = sprite_manager.get_sprite(Game::Config::Sprites::OBSTACLE);
+        SDL_RenderTexture(renderer, player_sprite.get_texture(), NULL, player_sprite.get_rectangle());
+        SDL_RenderTexture(renderer, obstacle_sprite.get_texture(), NULL, obstacle_sprite.get_rectangle());
 
         // Draw everything on a white background
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);

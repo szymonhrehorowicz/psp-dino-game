@@ -30,7 +30,7 @@ template <typename Enum> class Sprite_Manager
         auto &sprite = m_sprites[value];
         assert(sprite);
 
-        return sprite;
+        return *sprite;
     }
 
   private:

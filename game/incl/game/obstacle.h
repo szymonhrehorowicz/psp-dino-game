@@ -12,8 +12,7 @@ namespace PS::Game
 class Obstacle : public Actor
 {
   public:
-    Obstacle(SDL_Renderer &renderer)
-        : Actor(renderer, Config::OBSTACLE_SPRITE, {Config::OBSTACLE_POSITION_X, Config::OBSTACLE_POSITION_Y}) {};
+    Obstacle() : Actor({Config::OBSTACLE_POSITION_X, Config::OBSTACLE_POSITION_Y}) {};
 
     void move_left()
     {
