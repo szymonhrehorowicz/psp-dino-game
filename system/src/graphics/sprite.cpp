@@ -5,7 +5,7 @@
 namespace PS::System::Graphics
 {
 
-Sprite::Sprite(SDL_Renderer &renderer, const char *file, Position position)
+Sprite::Sprite(SDL_Renderer &renderer, const char *file)
 {
     SDL_Surface *pixels = SDL_LoadPNG(file);
 
@@ -16,10 +16,7 @@ Sprite::Sprite(SDL_Renderer &renderer, const char *file, Position position)
         SDL_DestroySurface(pixels);
         if (m_sprite != nullptr)
         {
-            SDL_GetTextureSize(m_sprite, &m_rectangle.w, &m_rectangle.h);
-
-            m_rectangle.x = position.x;
-            m_rectangle.y = position.y;
+            SDL_GetTextureSize(m_sprite, &m_dimensions.x, &m_dimensions.y);
         }
         else
         {
@@ -38,12 +35,6 @@ Sprite::~Sprite()
     {
         SDL_DestroyTexture(m_sprite);
     }
-}
-
-void Sprite::set_position(Position position)
-{
-    m_rectangle.x = position.x;
-    m_rectangle.y = position.y;
 }
 
 } // namespace PS::System::Graphics

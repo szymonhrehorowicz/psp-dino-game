@@ -17,12 +17,12 @@ template <typename Enum> class Sprite_Manager
   public:
     Sprite_Manager(SDL_Renderer &renderer) : m_renderer(renderer) {};
 
-    void make_sprite(Enum const value, const char *file, Position position)
+    void make_sprite(Enum const value, const char *file)
     {
         auto &sprite = m_sprites[value];
         assert(!sprite);
 
-        sprite = std::make_unique<Sprite>(m_renderer, file, position);
+        sprite = std::make_unique<Sprite>(m_renderer, file);
     }
 
     Sprite &get_sprite(Enum const value)

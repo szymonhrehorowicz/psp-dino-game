@@ -5,7 +5,7 @@
 namespace PS::Game
 {
 
-Move_Left_Action::Move_Left_Action(System::Position &position) : m_position(position)
+Move_Left_Action::Move_Left_Action(System::Vector_2D &position) : m_position(position)
 {
     float const x = m_position.x - Config::OBSTACLE_SPEED;
     if (x >= 0)

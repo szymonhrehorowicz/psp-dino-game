@@ -9,25 +9,28 @@ namespace PS::System::Graphics
 class Sprite
 {
   public:
-    explicit Sprite(SDL_Renderer &renderer, const char *file, Position position);
+    explicit Sprite(SDL_Renderer &renderer, const char *file);
 
     ~Sprite();
-
-    void set_position(Position position);
 
     SDL_Texture *get_texture() const
     {
         return m_sprite;
     }
 
-    SDL_FRect const *get_rectangle() const
+    /**
+     * @brief Get the dimensions of the sprite
+     *
+     * @return Vector_2D, where x - width; y - height
+     */
+    Vector_2D get_dimensions() const
     {
-        return &m_rectangle;
+        return m_dimensions;
     }
 
   private:
     SDL_Texture *m_sprite{nullptr};
-    SDL_FRect m_rectangle{};
+    Vector_2D m_dimensions{0, 0};
 };
 
 } // namespace PS::System::Graphics

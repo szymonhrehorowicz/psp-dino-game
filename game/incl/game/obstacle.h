@@ -14,6 +14,8 @@ class Obstacle : public Actor
   public:
     Obstacle() : Actor({Config::OBSTACLE_POSITION_X, Config::OBSTACLE_POSITION_Y}) {};
 
+    Obstacle(System::Vector_2D position) : Actor(position) {};
+
     void move_left()
     {
         if (!has_active_action())

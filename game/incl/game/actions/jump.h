@@ -7,7 +7,7 @@ namespace PS
 
 namespace System
 {
-struct Position;
+struct Vector_2D;
 }
 
 namespace Game
@@ -16,12 +16,12 @@ namespace Game
 class Jump_Action : public Library::Action
 {
   public:
-    Jump_Action(struct System::Position &position);
+    Jump_Action(struct System::Vector_2D &position);
 
     void execute() final;
 
   private:
-    System::Position &m_position;
+    System::Vector_2D &m_position;
 };
 
 } // namespace Game

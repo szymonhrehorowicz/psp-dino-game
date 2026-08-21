@@ -15,7 +15,7 @@ namespace PS::Game
 class Actor
 {
   public:
-    explicit Actor(System::Position position) : m_position(position) {};
+    explicit Actor(System::Vector_2D position) : m_position(position) {};
 
     virtual void animate()
     {
@@ -33,12 +33,12 @@ class Actor
         }
     };
 
-    System::Position const &get_position() const
+    System::Vector_2D const &get_position() const
     {
         return m_position;
     }
 
-    System::Position &get_position()
+    System::Vector_2D &get_position()
     {
         return m_position;
     }
@@ -55,7 +55,7 @@ class Actor
     }
 
   private:
-    System::Position m_position;
+    System::Vector_2D m_position;
     std::vector<std::unique_ptr<Library::Action>> m_actions{};
 };
 

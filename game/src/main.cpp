@@ -1,3 +1,4 @@
+#include "SDL3/SDL_rect.h"
 #include "game/config.h"
 #include "game/controller_manager.h"
 #include "game/obstacle.h"
@@ -34,25 +35,30 @@ int main(int argc, char *argv[])
 
     // Actors
     Game::Player player{};
-    Game::Obstacle obstacle{};
+    Game::Obstacle obstacle1{};
+    Game::Obstacle obstacle2{{Game::Config::OBSTACLE_POSITION_X / 2, Game::Config::OBSTACLE_POSITION_Y / 2}};
 
     // Controls
     Game::Controller_Manager controller_manager{};
 
     // Scene
     System::Graphics::Sprite_Manager<Game::Config::Sprites> sprite_manager{*renderer};
-    sprite_manager.make_sprite(Game::Config::Sprites::PLAYER, Game::Config::PLAYER_SPRITE,
-                               {Game::Config::PLAYER_POSITION_X, Game::Config::PLAYER_POSITION_Y});
-    sprite_manager.make_sprite(Game::Config::Sprites::OBSTACLE, Game::Config::OBSTACLE_SPRITE,
-                               {Game::Config::OBSTACLE_POSITION_X, Game::Config::OBSTACLE_POSITION_Y});
+    sprite_manager.make_sprite(Game::Config::Sprites::PLAYER, Game::Config::PLAYER_SPRITE);
+    sprite_manager.make_sprite(Game::Config::Sprites::OBSTACLE, Game::Config::OBSTACLE_SPRITE);
 
     // Signals
     controller_manager.on_button_pressed(PspCtrlButtons::PSP_CTRL_CROSS).connect(&player, &Game::Player::jump);
     Library::Signal<> game_tick{};
-    game_tick.connect(&obstacle, &Game::Obstacle::move_left);
+    game_tick.connect(&obstacle1, &Game::Obstacle::move_left);
+    game_tick.connect(&obstacle2, &Game::Obstacle::move_left);
 
     int running = 1;
     SDL_Event event;
+
+    SDL_FRect player_rectangle{};
+    SDL_FRect obstacle1_rectangle{};
+    SDL_FRect obstacle2_rectangle{};
+
     while (running)
     {
 
@@ -84,10 +90,27 @@ int main(int argc, char *argv[])
         game_tick.emit();
 
         player.animate();
-        obstacle.animate();
+        obstacle1.animate();
+        obstacle2.animate();
 
-        sprite_manager.get_sprite(Game::Config::Sprites::PLAYER).set_position(player.get_position());
-        sprite_manager.get_sprite(Game::Config::Sprites::OBSTACLE).set_position(obstacle.get_position());
+        auto const player_dimensions = sprite_manager.get_sprite(Game::Config::Sprites::PLAYER).get_dimensions();
+        player_rectangle.w = player_dimensions.x;
+        player_rectangle.h = player_dimensions.y;
+        auto const player_position = player.get_position();
+        player_rectangle.x = player_position.x;
+        player_rectangle.y = player_position.y;
+
+        auto const obstacle_dimensions = sprite_manager.get_sprite(Game::Config::Sprites::PLAYER).get_dimensions();
+        obstacle1_rectangle.w = obstacle_dimensions.x;
+        obstacle1_rectangle.h = obstacle_dimensions.y;
+        obstacle2_rectangle.w = obstacle_dimensions.x;
+        obstacle2_rectangle.h = obstacle_dimensions.y;
+        auto const obstacle_1 = obstacle1.get_position();
+        obstacle1_rectangle.x = obstacle_1.x;
+        obstacle1_rectangle.y = obstacle_1.y;
+        auto const obstacle_2 = obstacle2.get_position();
+        obstacle2_rectangle.x = obstacle_2.x;
+        obstacle2_rectangle.y = obstacle_2.y;
 
         // Clear the screen
         SDL_RenderClear(renderer);
@@ -95,8 +118,9 @@ int main(int argc, char *argv[])
         // Draw Actors
         auto &player_sprite = sprite_manager.get_sprite(Game::Config::Sprites::PLAYER);
         auto &obstacle_sprite = sprite_manager.get_sprite(Game::Config::Sprites::OBSTACLE);
-        SDL_RenderTexture(renderer, player_sprite.get_texture(), NULL, player_sprite.get_rectangle());
-        SDL_RenderTexture(renderer, obstacle_sprite.get_texture(), NULL, obstacle_sprite.get_rectangle());
+        SDL_RenderTexture(renderer, player_sprite.get_texture(), NULL, &player_rectangle);
+        SDL_RenderTexture(renderer, obstacle_sprite.get_texture(), NULL, &obstacle1_rectangle);
+        SDL_RenderTexture(renderer, obstacle_sprite.get_texture(), NULL, &obstacle2_rectangle);
 
         // Draw everything on a white background
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);

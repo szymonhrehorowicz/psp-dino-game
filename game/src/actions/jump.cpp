@@ -5,7 +5,7 @@
 namespace PS::Game
 {
 
-Jump_Action::Jump_Action(System::Position &position) : m_position(position)
+Jump_Action::Jump_Action(System::Vector_2D &position) : m_position(position)
 {
     float const y = m_position.y - Config::PLAYER_JUMP_HEIGHT;
     m_position = {m_position.x, y};
