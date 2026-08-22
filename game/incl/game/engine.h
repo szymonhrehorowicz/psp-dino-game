@@ -62,7 +62,7 @@ class Engine
         });
     }
 
-    void add_obstacle(System::Vector_2D position = {
+    void add_obstacle(Library::Vector_2D position = {
                           Config::OBSTACLE_POSITION_X,
                           Config::OBSTACLE_POSITION_Y,
                       })

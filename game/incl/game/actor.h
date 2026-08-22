@@ -13,7 +13,7 @@
 
 #include "SDL3/SDL_rect.h"
 #include "library/action.h"
-#include "system/coordinates.h"
+#include "library/coordinates.h"
 #include <memory>
 #include <vector>
 
@@ -56,7 +56,7 @@ class Actor
         }
     };
 
-    void set_dimensions(System::Vector_2D dimensions)
+    void set_dimensions(Library::Vector_2D dimensions)
     {
         m_position.w = dimensions.x;
         m_position.h = dimensions.y;
