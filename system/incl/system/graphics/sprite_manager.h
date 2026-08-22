@@ -25,6 +25,14 @@ template <typename Enum> class Sprite_Manager
         sprite = std::make_unique<Sprite>(m_renderer, file);
     }
 
+    Sprite const &get_sprite(Enum const value) const
+    {
+        auto &sprite = m_sprites[value];
+        assert(sprite);
+
+        return *sprite;
+    }
+
     Sprite &get_sprite(Enum const value)
     {
         auto &sprite = m_sprites[value];

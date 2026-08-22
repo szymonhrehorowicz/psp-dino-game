@@ -23,7 +23,7 @@ class Sprite
      *
      * @return Vector_2D, where x - width; y - height
      */
-    Vector_2D get_dimensions() const
+    [[nodiscard]] Vector_2D get_dimensions() const
     {
         return m_dimensions;
     }

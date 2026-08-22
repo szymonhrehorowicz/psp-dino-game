@@ -11,6 +11,7 @@
 
 #pragma once
 
+#include "SDL3/SDL_rect.h"
 #include "library/action.h"
 #include "system/coordinates.h"
 #include <memory>
@@ -32,7 +33,7 @@ class Actor
      *
      * @param position - inital position of an Actor
      */
-    explicit Actor(System::Vector_2D position) : m_position(position) {};
+    explicit Actor(SDL_FRect position) : m_position(position) {};
 
     /**
      * @brief Executes registered action if any in the queue.
@@ -55,12 +56,18 @@ class Actor
         }
     };
 
+    void set_dimensions(System::Vector_2D dimensions)
+    {
+        m_position.w = dimensions.x;
+        m_position.h = dimensions.y;
+    }
+
     /**
      * @brief Get (X,Y) position of an Actor
      *
-     * @return System::Vector_2D const&
+     * @return SDL_FRect const&
      */
-    System::Vector_2D const &get_position() const
+    SDL_FRect const &get_position() const
     {
         return m_position;
     }
@@ -68,9 +75,9 @@ class Actor
     /**
      * @brief Get (X,Y) position of an Actor
      *
-     * @return System::Vector_2D&
+     * @return SDL_FRect&
      */
-    System::Vector_2D &get_position()
+    SDL_FRect &get_position()
     {
         return m_position;
     }
@@ -98,7 +105,7 @@ class Actor
     }
 
   private:
-    System::Vector_2D m_position;
+    SDL_FRect m_position;
     std::vector<std::unique_ptr<Library::Action>> m_actions{};
 };
 

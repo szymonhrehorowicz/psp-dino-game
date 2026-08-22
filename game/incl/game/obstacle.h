@@ -12,9 +12,9 @@ namespace PS::Game
 class Obstacle : public Actor
 {
   public:
-    Obstacle() : Actor({Config::OBSTACLE_POSITION_X, Config::OBSTACLE_POSITION_Y}) {};
+    Obstacle() : Actor({.x = Config::OBSTACLE_POSITION_X, .y = Config::OBSTACLE_POSITION_Y}) {};
 
-    Obstacle(System::Vector_2D position) : Actor(position) {};
+    Obstacle(System::Vector_2D position) : Actor({.x = position.x, .y = position.y}) {};
 
     void move_left()
     {
