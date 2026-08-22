@@ -16,9 +16,10 @@ namespace PS::Game
 class Obstacle : public Actor
 {
   public:
-    Obstacle() : Actor({.x = Config::OBSTACLE_POSITION_X, .y = Config::OBSTACLE_POSITION_Y}) {};
+    Obstacle()
+        : Actor({.x = Config::OBSTACLE_POSITION_X, .y = Config::OBSTACLE_POSITION_Y}, Config::Sprites::OBSTACLE) {};
 
-    Obstacle(Library::Vector_2D position) : Actor({.x = position.x, .y = position.y}) {};
+    Obstacle(Library::Vector_2D position) : Actor({.x = position.x, .y = position.y}, Config::Sprites::OBSTACLE) {};
 
     /**
      * @brief Registers an Action for the Obstacle to move left.

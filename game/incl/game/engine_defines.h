@@ -21,7 +21,6 @@ namespace PS::Game
 struct Actor_Data
 {
     std::unique_ptr<Actor> ptr;
-    Config::Sprites sprite;
     std::map<Config::Signals, int> signals;
 };
 

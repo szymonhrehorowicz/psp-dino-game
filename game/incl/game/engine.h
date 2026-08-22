@@ -14,6 +14,7 @@
 #include "actor.h"
 #include "controller_manager.h"
 #include "engine_defines.h"
+#include "game/collision_detector.h"
 #include "game/config.h"
 #include "game/obstacle.h"
 #include "game/player.h"
@@ -35,8 +36,10 @@ namespace PS::Game
 class Engine
 {
   public:
-    Engine(Library::Vector_2D player_dimensions, Library::Vector_2D obstacle_dimensions)
-        : m_player_dimensions(player_dimensions), m_obstacle_dimensions(obstacle_dimensions)
+    Engine(Library::Vector_2D player_dimensions, Library::Vector_2D dead_player_dimensions,
+           Library::Vector_2D obstacle_dimensions)
+        : m_player_dimensions(player_dimensions), m_dead_player_dimensions(dead_player_dimensions),
+          m_obstacle_dimensions(obstacle_dimensions)
     {
         m_obstacle_position_generator.set_period(100);
         m_obstacle_position_generator.set_starting_x(Config::SCREEN_WIDTH + obstacle_dimensions.x);
@@ -63,10 +66,13 @@ class Engine
             actor.ptr->animate();
         }
 
+        // Collisions
+        m_collision_detector.update(m_actors);
+
         // Cleanup
         for (auto it = m_actors.begin(); it != m_actors.end();)
         {
-            if (it->sprite == Config::Sprites::OBSTACLE)
+            if (it->ptr->get_sprite() == Config::Sprites::OBSTACLE)
             {
                 auto const &rectangle = it->ptr->get_rectangle();
 
@@ -103,18 +109,18 @@ class Engine
      */
     void add_player()
     {
-        auto player = std::make_unique<Player>();
-        auto const sprite = Config::Sprites::PLAYER;
+        auto player = std::make_unique<Player>(m_dead_player_dimensions);
 
         player->set_dimensions(m_player_dimensions);
 
         m_controller_manager.on_button_pressed(PspCtrlButtons::PSP_CTRL_CROSS)
             .connect(player.get(), &Game::Player::jump);
 
+        int const on_collision_id = m_collision_detector.on_collision().connect(player.get(), &Player::die);
+
         m_actors.emplace_back(Actor_Data{
             .ptr = std::move(player),
-            .sprite = sprite,
-            .signals = {},
+            .signals = {{Config::Signals::COLLISION, on_collision_id}},
         });
     }
 
@@ -130,23 +136,24 @@ class Engine
                       })
     {
         auto obstacle = std::make_unique<Obstacle>(position);
-        auto const sprite = Config::Sprites::OBSTACLE;
 
         obstacle->set_dimensions(m_obstacle_dimensions);
 
-        int on_game_tick_id = m_game_tick.connect(obstacle.get(), &Obstacle::move_left);
+        int const on_game_tick_id = m_game_tick.connect(obstacle.get(), &Obstacle::move_left);
 
         m_actors.emplace_back(Actor_Data{
             .ptr = std::move(obstacle),
-            .sprite = sprite,
             .signals = {{Config::Signals::GAME_TICK, on_game_tick_id}},
         });
     }
 
     Library::Vector_2D m_player_dimensions;
+    Library::Vector_2D m_dead_player_dimensions;
     Library::Vector_2D m_obstacle_dimensions;
+
     Controller_Manager m_controller_manager{};
     Library::Obstacle_Position_Generator m_obstacle_position_generator{};
+    Collision_Detector<Game::Config::SCREEN_WIDTH, Game::Config::SCREEN_HEIGHT> m_collision_detector{};
 
     Actors m_actors{};
     Library::Signal<> m_game_tick{};

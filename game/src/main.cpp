@@ -15,14 +15,16 @@ int main(int /*argc*/, char * /*argv*/[])
         return 1;
     }
 
-    Game::Graphics_Engine graphics_engine{Game::Config::SCREEN_WIDTH, Game::Config::SCREEN_HEIGHT};
+    Game::Graphics_Engine graphics_engine{};
 
     // [SCENE]
     graphics_engine.load_sprite(Game::Config::Sprites::PLAYER, Game::Config::PLAYER_SPRITE);
+    graphics_engine.load_sprite(Game::Config::Sprites::PLAYER_DEAD, Game::Config::PLAYER_DEAD_SPRITE);
     graphics_engine.load_sprite(Game::Config::Sprites::OBSTACLE, Game::Config::OBSTACLE_SPRITE);
 
     // [ENGINE]
     Game::Engine engine{graphics_engine.sprite_dimensions(Game::Config::Sprites::PLAYER),
+                        graphics_engine.sprite_dimensions(Game::Config::Sprites::PLAYER_DEAD),
                         graphics_engine.sprite_dimensions(Game::Config::Sprites::OBSTACLE)};
     engine.add_player();
 

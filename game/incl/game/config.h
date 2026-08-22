@@ -33,6 +33,7 @@ constexpr int PLAYER_JUMP_SPEED = -GRAVITY;
 constexpr int PLAYER_POSITION_X = 200;
 constexpr int PLAYER_POSITION_Y = GROUND_LEVEL;
 constexpr char const *PLAYER_SPRITE = "idle.png";
+constexpr char const *PLAYER_DEAD_SPRITE = "dead.png";
 
 // Obstacle
 constexpr int OBSTACLE_SPEED = 1;
@@ -50,14 +51,16 @@ static_assert((OBSTACLE_POSITION_X % OBSTACLE_SPEED) == 0);
 enum class Sprites
 {
     PLAYER = 0,
-    OBSTACLE = 1,
+    PLAYER_DEAD = 1,
+    OBSTACLE = 2,
 
-    LAST = 2
+    LAST = 3
 };
 
 enum class Signals
 {
     GAME_TICK = 0,
+    COLLISION = 1,
 };
 
 } // namespace PS::Game::Config

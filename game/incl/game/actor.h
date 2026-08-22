@@ -12,6 +12,7 @@
 #pragma once
 
 #include "SDL3/SDL_rect.h"
+#include "config.h"
 #include "library/action.h"
 #include "library/coordinates.h"
 #include <memory>
@@ -33,7 +34,7 @@ class Actor
      *
      * @param rectangle - inital rectangle of an Actor
      */
-    explicit Actor(SDL_FRect rectangle) : m_rectangle(rectangle) {};
+    explicit Actor(SDL_FRect rectangle, Config::Sprites sprite) : m_rectangle(rectangle), m_sprite(sprite) {};
 
     /**
      * @brief Executes registered action if any in the queue.
@@ -84,6 +85,11 @@ class Actor
         return m_rectangle;
     }
 
+    Config::Sprites &get_sprite()
+    {
+        return m_sprite;
+    }
+
   protected:
     /**
      * @brief Is Actor currently executing some action
@@ -108,6 +114,7 @@ class Actor
 
   private:
     SDL_FRect m_rectangle;
+    Config::Sprites m_sprite;
     std::vector<std::unique_ptr<Library::Action>> m_actions{};
 };
 

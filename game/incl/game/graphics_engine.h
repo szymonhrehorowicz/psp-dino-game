@@ -1,5 +1,5 @@
 /**
- * @file engine.h
+ * @file graphics_engine.h
  * @author Szymon Hrehorowicz
  * @brief
  * @version 0.1
@@ -35,13 +35,12 @@ class Graphics_Engine
     using Renderer_Ptr = std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)>;
 
   public:
-    Graphics_Engine(int screen_width, int screen_height)
-        : m_screen_width(screen_width), m_screen_height(screen_height), m_ground_level(Config::GROUND_LEVEL)
+    Graphics_Engine()
     {
         SDL_Window *window = nullptr;
         SDL_Renderer *renderer = nullptr;
 
-        if (!SDL_CreateWindowAndRenderer("window", screen_width, screen_height, 0, &window, &renderer))
+        if (!SDL_CreateWindowAndRenderer("window", Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, 0, &window, &renderer))
         {
             throw System::SDL_Exception("Couldn't create window/renderer");
         }
@@ -67,16 +66,11 @@ class Graphics_Engine
 
         for (auto const &actor : actors)
         {
-            auto const &sprite = m_sprite_manager->get_sprite(actor.sprite);
+            auto const &sprite = m_sprite_manager->get_sprite(actor.ptr->get_sprite());
             SDL_RenderTexture(m_renderer.get(), sprite.get_texture(), nullptr, &actor.ptr->get_rectangle());
         }
 
         SDL_RenderPresent(m_renderer.get());
-    }
-
-    void set_ground_level(int level)
-    {
-        m_ground_level = level;
     }
 
   private:
@@ -89,9 +83,9 @@ class Graphics_Engine
 
     void render_ground()
     {
-        static SDL_FRect const ground_rectangle{0.0F, static_cast<float>(m_ground_level),
-                                                static_cast<float>(m_screen_width),
-                                                static_cast<float>(m_screen_height - m_ground_level)};
+        static SDL_FRect const ground_rectangle{0.0F, static_cast<float>(Config::GROUND_LEVEL),
+                                                static_cast<float>(Config::SCREEN_WIDTH),
+                                                static_cast<float>(Config::SCREEN_HEIGHT - Config::GROUND_LEVEL)};
 
         SDL_SetRenderDrawColor(m_renderer.get(), Config::GROUND_COLOR.r, Config::GROUND_COLOR.g, Config::GROUND_COLOR.b,
                                Config::GROUND_COLOR.a);
@@ -107,10 +101,6 @@ class Graphics_Engine
     Window_Ptr m_window{nullptr, SDL_DestroyWindow};
     Renderer_Ptr m_renderer{nullptr, SDL_DestroyRenderer};
     std::unique_ptr<Sprite_Manager> m_sprite_manager;
-
-    int m_screen_width;
-    int m_screen_height;
-    int m_ground_level{};
 };
 
 } // namespace PS::Game
