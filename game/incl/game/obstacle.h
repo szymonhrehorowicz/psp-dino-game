@@ -9,6 +9,10 @@
 namespace PS::Game
 {
 
+/**
+ * @brief Represents Obstacle state of Actor.
+ *
+ */
 class Obstacle : public Actor
 {
   public:
@@ -16,6 +20,10 @@ class Obstacle : public Actor
 
     Obstacle(Library::Vector_2D position) : Actor({.x = position.x, .y = position.y}) {};
 
+    /**
+     * @brief Registers an Action for the Obstacle to move left.
+     *
+     */
     void move_left()
     {
         if (!has_active_action())

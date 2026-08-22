@@ -28,6 +28,10 @@ namespace PS::Game
 class Controller_Manager
 {
   public:
+    /**
+     * @brief Evaluate and raise specific signals of controller - if their conditions are met.
+     *
+     */
     void update()
     {
         m_controller.update();

@@ -1,3 +1,14 @@
+/**
+ * @file engine.h
+ * @author Szymon Hrehorowicz
+ * @brief
+ * @version 0.1
+ * @date 2026-08-22
+ *
+ * @copyright Copyright (c) 2026
+ *
+ */
+
 #pragma once
 
 #include "actor.h"
@@ -16,6 +27,10 @@
 namespace PS::Game
 {
 
+/**
+ * @brief Game Engine
+ *
+ */
 class Engine
 {
     using Sprites_Manager = System::Graphics::Sprite_Manager<Game::Config::Sprites>;
@@ -44,6 +59,10 @@ class Engine
         m_obstacle_position_generator.on_new_obstacle().connect(this, &Engine::add_obstacle);
     };
 
+    /**
+     * @brief Update state of the game engine.
+     *
+     */
     void update()
     {
         m_controller_manager.update();
@@ -80,11 +99,20 @@ class Engine
         }
     }
 
+    /**
+     * @brief Get vector of data associated with each existing Actor
+     *
+     * @return Actors const&
+     */
     Actors const &get_actors() const
     {
         return m_actors;
     }
 
+    /**
+     * @brief Add player.
+     *
+     */
     void add_player()
     {
         auto player = std::make_unique<Player>();
@@ -103,6 +131,12 @@ class Engine
         });
     }
 
+  private:
+    /**
+     * @brief Add new obstacle.
+     *
+     * @param position - (optional) position where the obstacle is to be created
+     */
     void add_obstacle(Library::Vector_2D position = {
                           Config::OBSTACLE_POSITION_X,
                           Config::OBSTACLE_POSITION_Y,
@@ -123,7 +157,6 @@ class Engine
         });
     }
 
-  private:
     Sprites_Manager const &m_sprites_manager;
     Controller_Manager m_controller_manager{};
     Library::Obstacle_Position_Generator m_obstacle_position_generator{};

@@ -1,3 +1,14 @@
+/**
+ * @file sprite_manager.h
+ * @author Szymon Hrehorowicz
+ * @brief
+ * @version 0.1
+ * @date 2026-08-22
+ *
+ * @copyright Copyright (c) 2026
+ *
+ */
+
 #pragma once
 
 #include "library/enum_array.h"
@@ -8,6 +19,11 @@
 namespace PS::System::Graphics
 {
 
+/**
+ * @brief Provides access to sprites.
+ *
+ * @tparam Enum - enumeration representing available sprites.
+ */
 template <typename Enum> class Sprite_Manager
 {
     static_assert(std::is_enum_v<Enum>, "Enum_Array requires an enum type");
@@ -17,6 +33,12 @@ template <typename Enum> class Sprite_Manager
   public:
     Sprite_Manager(SDL_Renderer &renderer) : m_renderer(renderer) {};
 
+    /**
+     * @brief Creates new sprite and stores it.
+     *
+     * @param value - element of templated enumeration type indicating specific sprite.
+     * @param file - name of a `file` with sprite to be loaded and associated with given `value`.
+     */
     void make_sprite(Enum const value, const char *file)
     {
         auto &sprite = m_sprites[value];
@@ -25,6 +47,12 @@ template <typename Enum> class Sprite_Manager
         sprite = std::make_unique<Sprite>(m_renderer, file);
     }
 
+    /**
+     * @brief Get Sprite object associated with given identifier.
+     *
+     * @param value - identifier of a specific Sprite.
+     * @return Sprite const&
+     */
     Sprite const &get_sprite(Enum const value) const
     {
         auto &sprite = m_sprites[value];
@@ -33,6 +61,12 @@ template <typename Enum> class Sprite_Manager
         return *sprite;
     }
 
+    /**
+     * @brief Get Sprite object associated with given identifier.
+     *
+     * @param value - identifier of a specific Sprite.
+     * @return Sprite&
+     */
     Sprite &get_sprite(Enum const value)
     {
         auto &sprite = m_sprites[value];

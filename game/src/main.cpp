@@ -37,11 +37,6 @@ int main(int /*argc*/, char * /*argv*/[])
     // [ENGINE]
     Game::Engine engine{sprite_manager};
     engine.add_player();
-    engine.add_obstacle();
-    engine.add_obstacle({
-        Game::Config::OBSTACLE_POSITION_X / 2,
-        Game::Config::OBSTACLE_POSITION_Y / 2,
-    });
 
     int running = 1;
     SDL_Event event;

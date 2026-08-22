@@ -1,6 +1,14 @@
 # PSP Game
 
+## Game
+
+Game for Sony PlayStation Portable. Inspired by [Dinosaur Game — Chrome Dino T-Rex Runner](https://chromedino.com/).
+
 ## Development
+
+### SDK
+
+Game is developed with the help of [PlayStation Portable Software Development Kit](https://pspdev.github.io/).
 
 ### Building
 

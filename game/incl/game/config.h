@@ -1,3 +1,14 @@
+/**
+ * @file config.h
+ * @author Szymon Hrehorowicz
+ * @brief
+ * @version 0.1
+ * @date 2026-08-22
+ *
+ * @copyright Copyright (c) 2026
+ *
+ */
+
 #pragma once
 
 #include <cstdint>
@@ -10,7 +21,7 @@ constexpr int SCREEN_WIDTH = 480;
 constexpr int SCREEN_HEIGHT = 272;
 
 // World
-constexpr int GRAVITY = 5;
+constexpr int GRAVITY = 2;
 constexpr int GROUND_LEVEL = 200;
 constexpr uint8_t SKY_COLOR_R = 140;
 constexpr uint8_t SKY_COLOR_G = 195;
@@ -22,7 +33,7 @@ constexpr uint8_t GROUND_COLOR_B = 0;
 constexpr uint8_t GROUND_COLOR_A = 255;
 
 // Player
-constexpr int PLAYER_JUMP_HEIGHT = -50;
+constexpr int PLAYER_JUMP_HEIGHT = -80;
 constexpr int PLAYER_JUMP_SPEED = -GRAVITY;
 constexpr int PLAYER_POSITION_X = 200;
 constexpr int PLAYER_POSITION_Y = GROUND_LEVEL;

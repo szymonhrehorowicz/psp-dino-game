@@ -6,6 +6,10 @@
 namespace PS::System::Graphics
 {
 
+/**
+ * @brief Handles the sprite. Loads it from a file and grants access to it.
+ *
+ */
 class Sprite
 {
   public:
@@ -13,13 +17,18 @@ class Sprite
 
     ~Sprite();
 
+    /**
+     * @brief Get texture of a Sprite.
+     *
+     * @return SDL_Texture*
+     */
     SDL_Texture *get_texture() const
     {
         return m_sprite;
     }
 
     /**
-     * @brief Get the dimensions of the sprite
+     * @brief Get the dimensions of the Sprite
      *
      * @return Library::Vector_2D, where x - width; y - height
      */
