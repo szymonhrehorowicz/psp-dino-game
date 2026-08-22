@@ -16,10 +16,10 @@
 namespace PS::System
 {
 
-class Sprite_Exception : public std::exception
+class SDL_Exception : public std::exception
 {
   public:
-    explicit Sprite_Exception(const char *message) : m_message(message)
+    explicit SDL_Exception(const char *message) : m_message(message)
     {
     }
 

@@ -13,12 +13,13 @@
 
 #include "actor.h"
 #include "controller_manager.h"
+#include "engine_defines.h"
 #include "game/config.h"
 #include "game/obstacle.h"
 #include "game/player.h"
+#include "library/coordinates.h"
 #include "library/obstacle_position_generator.h"
 #include "library/signal.h"
-#include "system/graphics/sprite_manager.h"
 #include <map>
 #include <memory>
 #include <utility>
@@ -33,28 +34,15 @@ namespace PS::Game
  */
 class Engine
 {
-    using Sprites_Manager = System::Graphics::Sprite_Manager<Game::Config::Sprites>;
-
-    struct Actor_Data
-    {
-        std::unique_ptr<Actor> ptr;
-        Config::Sprites sprite;
-        std::map<Config::Signals, int> signals;
-    };
-
-    using Actors = std::vector<Actor_Data>;
-
   public:
-    Engine(Sprites_Manager const &sprites_manager) : m_sprites_manager(sprites_manager)
+    Engine(Library::Vector_2D player_dimensions, Library::Vector_2D obstacle_dimensions)
+        : m_player_dimensions(player_dimensions), m_obstacle_dimensions(obstacle_dimensions)
     {
-        auto const obstacle_dimensions = m_sprites_manager.get_sprite(Config::Sprites::OBSTACLE).get_dimensions();
-        auto const player_dimensions = m_sprites_manager.get_sprite(Config::Sprites::PLAYER).get_dimensions();
-
         m_obstacle_position_generator.set_period(100);
         m_obstacle_position_generator.set_starting_x(Config::SCREEN_WIDTH + obstacle_dimensions.x);
 
         int const lower_level = Config::OBSTACLE_POSITION_Y;
-        int const upper_level = lower_level - player_dimensions.y;
+        int const upper_level = lower_level - m_player_dimensions.y;
         m_obstacle_position_generator.set_levels(lower_level, upper_level);
         m_obstacle_position_generator.on_new_obstacle().connect(this, &Engine::add_obstacle);
     };
@@ -118,8 +106,7 @@ class Engine
         auto player = std::make_unique<Player>();
         auto const sprite = Config::Sprites::PLAYER;
 
-        auto const dimensions = m_sprites_manager.get_sprite(sprite).get_dimensions();
-        player->set_dimensions(dimensions);
+        player->set_dimensions(m_player_dimensions);
 
         m_controller_manager.on_button_pressed(PspCtrlButtons::PSP_CTRL_CROSS)
             .connect(player.get(), &Game::Player::jump);
@@ -145,8 +132,7 @@ class Engine
         auto obstacle = std::make_unique<Obstacle>(position);
         auto const sprite = Config::Sprites::OBSTACLE;
 
-        auto const dimensions = m_sprites_manager.get_sprite(sprite).get_dimensions();
-        obstacle->set_dimensions(dimensions);
+        obstacle->set_dimensions(m_obstacle_dimensions);
 
         int on_game_tick_id = m_game_tick.connect(obstacle.get(), &Obstacle::move_left);
 
@@ -157,7 +143,8 @@ class Engine
         });
     }
 
-    Sprites_Manager const &m_sprites_manager;
+    Library::Vector_2D m_player_dimensions;
+    Library::Vector_2D m_obstacle_dimensions;
     Controller_Manager m_controller_manager{};
     Library::Obstacle_Position_Generator m_obstacle_position_generator{};
 

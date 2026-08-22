@@ -11,6 +11,7 @@
 
 #pragma once
 
+#include "system/graphics/color.h"
 #include <cstdint>
 
 namespace PS::Game::Config
@@ -23,14 +24,8 @@ constexpr int SCREEN_HEIGHT = 272;
 // World
 constexpr int GRAVITY = 2;
 constexpr int GROUND_LEVEL = 200;
-constexpr uint8_t SKY_COLOR_R = 140;
-constexpr uint8_t SKY_COLOR_G = 195;
-constexpr uint8_t SKY_COLOR_B = 255;
-constexpr uint8_t SKY_COLOR_A = 204;
-constexpr uint8_t GROUND_COLOR_R = 0;
-constexpr uint8_t GROUND_COLOR_G = 160;
-constexpr uint8_t GROUND_COLOR_B = 0;
-constexpr uint8_t GROUND_COLOR_A = 255;
+constexpr System::Graphics::Color SKY_COLOR{140, 195, 255, 204};
+constexpr System::Graphics::Color GROUND_COLOR{0, 160, 0, 255};
 
 // Player
 constexpr int PLAYER_JUMP_HEIGHT = -80;

@@ -20,12 +20,12 @@ Sprite::Sprite(SDL_Renderer &renderer, const char *file)
         }
         else
         {
-            throw Sprite_Exception("Couldn't create texture");
+            throw SDL_Exception("Couldn't create texture");
         }
     }
     else
     {
-        throw Sprite_Exception("Couldn't load pixels");
+        throw SDL_Exception("Couldn't load pixels");
     }
 }
 
