@@ -60,6 +60,8 @@ class Actor
     {
         m_position.w = dimensions.x;
         m_position.h = dimensions.y;
+        m_position.x -= dimensions.x;
+        m_position.y -= dimensions.y;
     }
 
     /**

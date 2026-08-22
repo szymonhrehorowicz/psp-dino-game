@@ -18,6 +18,8 @@ class Jump_Action : public Library::Action
 
   private:
     SDL_FRect &m_position;
+    int m_distance{0};
+    bool m_is_falling{false};
 };
 
 } // namespace Game
