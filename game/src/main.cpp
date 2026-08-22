@@ -1,27 +1,18 @@
 #include "SDL3/SDL_rect.h"
 #include "SDL3/SDL_render.h"
 #include "game/config.h"
-#include "game/controller_manager.h"
 #include "game/engine.h"
-#include "game/obstacle.h"
-#include "game/player.h"
-#include "library/signal.h"
 #include "system/graphics/sprite_manager.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
 void render_background(SDL_Renderer *renderer);
 
-int main(int argc, char *argv[])
+int main(int /*argc*/, char * /*argv*/[])
 {
     using namespace PS;
 
-    // This prevents compiler warnings
-    // We don't actually need these variables, but they do need to be there so SDL_main works
-    (void)argc;
-    (void)argv;
-
-    // Initialize sdl
+    // [SDL]
     if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD))
     {
         SDL_Log("Couldn't initialize SDL: %s", SDL_GetError());
@@ -38,14 +29,12 @@ int main(int argc, char *argv[])
         return 2;
     }
 
-    // Controls
-    Game::Controller_Manager controller_manager{};
-
-    // Scene
+    // [SCENE]
     System::Graphics::Sprite_Manager<Game::Config::Sprites> sprite_manager{*renderer};
     sprite_manager.make_sprite(Game::Config::Sprites::PLAYER, Game::Config::PLAYER_SPRITE);
     sprite_manager.make_sprite(Game::Config::Sprites::OBSTACLE, Game::Config::OBSTACLE_SPRITE);
 
+    // [ENGINE]
     Game::Engine engine{sprite_manager};
     engine.add_player();
     engine.add_obstacle();
@@ -54,15 +43,12 @@ int main(int argc, char *argv[])
         Game::Config::OBSTACLE_POSITION_Y / 2,
     });
 
-    // Signals
-    // controller_manager.on_button_pressed(PspCtrlButtons::PSP_CTRL_CROSS).connect(&player, &Game::Player::jump);
-
     int running = 1;
     SDL_Event event;
 
     while (running)
     {
-        // Process input
+        // [SDL]
         if (SDL_PollEvent(&event))
         {
             switch (event.type)
@@ -85,14 +71,12 @@ int main(int argc, char *argv[])
             }
         }
 
-        // Game
-        controller_manager.update();
+        // [GAME]
         engine.update();
 
         // [RENDERING]
         render_background(renderer);
 
-        // Draw Actors
         auto &actors = engine.get_actors();
 
         for (auto &actor : actors)
@@ -103,6 +87,7 @@ int main(int argc, char *argv[])
 
         SDL_RenderPresent(renderer);
     }
+
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();

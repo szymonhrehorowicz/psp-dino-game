@@ -1,6 +1,7 @@
 #pragma once
 
 #include "actor.h"
+#include "controller_manager.h"
 #include "game/config.h"
 #include "game/obstacle.h"
 #include "game/player.h"
@@ -30,12 +31,18 @@ class Engine
 
     void update()
     {
+        m_controller_manager.update();
         m_game_tick.emit();
 
         for (auto &actor : m_actors)
         {
             actor.ptr->animate();
         }
+    }
+
+    Actors const &get_actors() const
+    {
+        return m_actors;
     }
 
     void add_player()
@@ -45,6 +52,9 @@ class Engine
 
         auto const dimensions = m_sprites_manager.get_sprite(sprite).get_dimensions();
         player->set_dimensions(dimensions);
+
+        m_controller_manager.on_button_pressed(PspCtrlButtons::PSP_CTRL_CROSS)
+            .connect(player.get(), &Game::Player::jump);
 
         m_actors.emplace_back(Actor_Sprite_Association{
             .ptr = std::move(player),
@@ -71,16 +81,11 @@ class Engine
         });
     }
 
-    Actors &get_actors()
-    {
-        return m_actors;
-    }
-
   private:
-    Actors m_actors{};
-
     Sprites_Manager const &m_sprites_manager;
+    Controller_Manager m_controller_manager{};
 
+    Actors m_actors{};
     Library::Signal<> m_game_tick{};
 };
 
