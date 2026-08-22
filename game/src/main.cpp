@@ -82,7 +82,7 @@ int main(int /*argc*/, char * /*argv*/[])
         for (auto &actor : actors)
         {
             auto &sprite = sprite_manager.get_sprite(actor.sprite);
-            SDL_RenderTexture(renderer, sprite.get_texture(), NULL, &actor.ptr->get_position());
+            SDL_RenderTexture(renderer, sprite.get_texture(), NULL, &actor.ptr->get_rectangle());
         }
 
         SDL_RenderPresent(renderer);

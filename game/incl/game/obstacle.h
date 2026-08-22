@@ -20,7 +20,7 @@ class Obstacle : public Actor
     {
         if (!has_active_action())
         {
-            request_action(std::make_unique<Move_Left_Action>(get_position()));
+            request_action(std::make_unique<Move_Left_Action>(get_rectangle()));
         }
     }
 };

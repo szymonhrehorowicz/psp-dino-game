@@ -4,12 +4,12 @@
 namespace PS::Game
 {
 
-Move_Left_Action::Move_Left_Action(SDL_FRect &position) : m_position(position)
+Move_Left_Action::Move_Left_Action(SDL_FRect &rectangle)
 {
-    float const x = m_position.x - Config::OBSTACLE_SPEED;
-    if (x >= 0)
+    float const x = rectangle.x - Config::OBSTACLE_SPEED;
+    if (x >= -rectangle.w)
     {
-        m_position.x = x;
+        rectangle.x = x;
     }
     m_is_finished = true;
 };

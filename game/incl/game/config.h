@@ -49,4 +49,9 @@ enum class Sprites
     LAST = 2
 };
 
+enum class Signals
+{
+    GAME_TICK = 0,
+};
+
 } // namespace PS::Game::Config

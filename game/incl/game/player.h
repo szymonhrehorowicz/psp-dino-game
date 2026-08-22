@@ -17,7 +17,7 @@ class Player : public Actor
     {
         if (!has_active_action())
         {
-            request_action(std::make_unique<Jump_Action>(get_position()));
+            request_action(std::make_unique<Jump_Action>(get_rectangle()));
         }
     }
 };

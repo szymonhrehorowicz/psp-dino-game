@@ -22,7 +22,7 @@ namespace PS::Game
 
 /**
  * @brief Base class for all actors. Actor is responsible for executing different actions.
- * Actions can, between others, modify the position of an Actor.
+ * Actions can, between others, modify the rectangle of an Actor.
  *
  */
 class Actor
@@ -31,9 +31,9 @@ class Actor
     /**
      * @brief Construct a new Actor object
      *
-     * @param position - inital position of an Actor
+     * @param rectangle - inital rectangle of an Actor
      */
-    explicit Actor(SDL_FRect position) : m_position(position) {};
+    explicit Actor(SDL_FRect rectangle) : m_rectangle(rectangle) {};
 
     /**
      * @brief Executes registered action if any in the queue.
@@ -58,30 +58,30 @@ class Actor
 
     void set_dimensions(Library::Vector_2D dimensions)
     {
-        m_position.w = dimensions.x;
-        m_position.h = dimensions.y;
-        m_position.x -= dimensions.x;
-        m_position.y -= dimensions.y;
+        m_rectangle.w = dimensions.x;
+        m_rectangle.h = dimensions.y;
+        m_rectangle.x -= dimensions.x;
+        m_rectangle.y -= dimensions.y;
     }
 
     /**
-     * @brief Get (X,Y) position of an Actor
+     * @brief Get (X,Y,W,H) rectangle of an Actor
      *
      * @return SDL_FRect const&
      */
-    SDL_FRect const &get_position() const
+    SDL_FRect const &get_rectangle() const
     {
-        return m_position;
+        return m_rectangle;
     }
 
     /**
-     * @brief Get (X,Y) position of an Actor
+     * @brief Get (X,Y,W,H) rectangle of an Actor
      *
      * @return SDL_FRect&
      */
-    SDL_FRect &get_position()
+    SDL_FRect &get_rectangle()
     {
-        return m_position;
+        return m_rectangle;
     }
 
   protected:
@@ -107,7 +107,7 @@ class Actor
     }
 
   private:
-    SDL_FRect m_position;
+    SDL_FRect m_rectangle;
     std::vector<std::unique_ptr<Library::Action>> m_actions{};
 };
 

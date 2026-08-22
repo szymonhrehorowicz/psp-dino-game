@@ -4,10 +4,7 @@
 namespace PS::Game
 {
 
-Jump_Action::Jump_Action(SDL_FRect &position)
-    : m_position(position) {
-          // m_position.y -= Config::PLAYER_JUMP_HEIGHT;
-      };
+Jump_Action::Jump_Action(SDL_FRect &rectangle) : m_rectangle(rectangle) {};
 
 void Jump_Action::execute()
 {
@@ -18,7 +15,7 @@ void Jump_Action::execute()
 
     if (!m_is_falling)
     {
-        m_position.y += Config::PLAYER_JUMP_SPEED;
+        m_rectangle.y += Config::PLAYER_JUMP_SPEED;
         m_distance += Config::PLAYER_JUMP_SPEED;
         if (m_distance <= Config::PLAYER_JUMP_HEIGHT)
         {
@@ -27,7 +24,7 @@ void Jump_Action::execute()
     }
     else
     {
-        m_position.y += Config::GRAVITY;
+        m_rectangle.y += Config::GRAVITY;
         m_distance += Config::GRAVITY;
         if (m_distance == 0)
         {

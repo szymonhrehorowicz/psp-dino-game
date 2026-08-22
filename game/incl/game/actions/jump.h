@@ -12,12 +12,12 @@ namespace Game
 class Jump_Action : public Library::Action
 {
   public:
-    Jump_Action(SDL_FRect &position);
+    Jump_Action(SDL_FRect &rectangle);
 
     void execute() final;
 
   private:
-    SDL_FRect &m_position;
+    SDL_FRect &m_rectangle;
     int m_distance{0};
     bool m_is_falling{false};
 };

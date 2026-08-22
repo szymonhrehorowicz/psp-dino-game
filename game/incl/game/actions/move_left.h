@@ -12,12 +12,9 @@ namespace Game
 class Move_Left_Action : public Library::Action
 {
   public:
-    Move_Left_Action(SDL_FRect &position);
+    Move_Left_Action(SDL_FRect &rectangle);
 
     void execute() final {};
-
-  private:
-    SDL_FRect &m_position;
 };
 
 } // namespace Game
