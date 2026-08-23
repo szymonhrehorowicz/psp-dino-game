@@ -4,7 +4,7 @@
 namespace PS::Game
 {
 
-Jump_Action::Jump_Action(SDL_FRect &rectangle) : m_rectangle(rectangle) {};
+Jump_Action::Jump_Action(Library::Rectangle &rectangle) : m_rectangle(rectangle) {};
 
 void Jump_Action::execute()
 {

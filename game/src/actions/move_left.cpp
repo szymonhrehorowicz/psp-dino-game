@@ -4,7 +4,7 @@
 namespace PS::Game
 {
 
-Move_Left_Action::Move_Left_Action(SDL_FRect &rectangle)
+Move_Left_Action::Move_Left_Action(Library::Rectangle &rectangle)
 {
     float const x = rectangle.x - Config::OBSTACLE_SPEED;
     if (x >= -rectangle.w)

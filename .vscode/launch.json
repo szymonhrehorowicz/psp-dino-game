@@ -1,0 +1,65 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "PSPLink: DinoGame",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/DinoGame",
+      "cwd": "${workspaceFolder}/build",
+      "MIMode": "gdb",
+      "miDebuggerPath": "/home/szymonh/pspdev/bin/psp-gdb",
+      "miDebuggerServerAddress": "localhost:10001",
+      "stopAtEntry": true,
+      "externalConsole": false,
+      "preLaunchTask": "Start PSPLink debug target",
+      "setupCommands": [
+        {
+          "description": "Use the PSP Allegrex architecture",
+          "text": "set architecture mips:allegrex",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Avoid stepping through SDL startup code",
+          "text": "skip function SDL_Init",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Prevent an unresponsive remote session from hanging forever",
+          "text": "set remotetimeout 5",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Load application symbols at the PSP PRX address",
+          "text": "symbol-file",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Relocate application symbols for PSPLink",
+          "text": "add-symbol-file /home/szymonh/_git/psp_hello_world/build/DinoGame 0x08800000",
+          "ignoreFailures": false
+        },
+        {
+          "description": "Break in graphics initialization",
+          "text": "break /home/szymonh/_git/psp_hello_world/game/incl/game/graphics_engine.h:46",
+          "ignoreFailures": false
+        },
+        {
+          "description": "Break when a C++ exception is thrown",
+          "text": "break __cxa_throw",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Break on failed assertions",
+          "text": "break __assert_func",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Break before abnormal termination",
+          "text": "break abort",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}

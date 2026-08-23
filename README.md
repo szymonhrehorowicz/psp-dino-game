@@ -43,3 +43,7 @@ flatpak run org.ppsspp.PPSSPP
 - X - z
 - [  ] - a
 - /\ - s
+
+To run the game on a PSP, copy the complete `build/psp/DinoGame/` directory to
+`/PSP/GAME/DinoGame/` on the memory stick. The PNG files must be in the same
+directory as `EBOOT.PBP`.

@@ -11,7 +11,6 @@
 
 #pragma once
 
-#include "SDL3/SDL_rect.h"
 #include "game/config.h"
 #include "library/action.h"
 #include "library/coordinates.h"
@@ -21,7 +20,7 @@ namespace PS::Game
 class Collision_Action : public Library::Action
 {
   public:
-    Collision_Action(SDL_FRect &rectangle, Library::Vector_2D dimensions, Config::Sprites &sprite,
+    Collision_Action(Library::Rectangle &rectangle, Library::Vector_2D dimensions, Config::Sprites &sprite,
                      Config::Sprites collision_sprite);
 
     void execute() final {};

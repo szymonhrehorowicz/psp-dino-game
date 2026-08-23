@@ -11,8 +11,8 @@
 
 #pragma once
 
-#include "SDL3/SDL_rect.h"
 #include "library/action.h"
+#include "library/coordinates.h"
 
 namespace PS
 {
@@ -27,7 +27,7 @@ namespace Game
 class Jump_Action : public Library::Action
 {
   public:
-    Jump_Action(SDL_FRect &rectangle);
+    Jump_Action(Library::Rectangle &rectangle);
 
     /**
      * @brief Executes a step of an action of jumping.
@@ -36,7 +36,7 @@ class Jump_Action : public Library::Action
     void execute() final;
 
   private:
-    SDL_FRect &m_rectangle;
+    Library::Rectangle &m_rectangle;
     int m_distance{0};
     bool m_is_falling{false};
 };

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "SDL3/SDL_render.h"
 #include "library/coordinates.h"
+#include <cstdint>
 
 namespace PS::System::Graphics
 {
@@ -13,7 +13,7 @@ namespace PS::System::Graphics
 class Sprite
 {
   public:
-    explicit Sprite(SDL_Renderer &renderer, const char *file);
+    explicit Sprite(const char *file);
 
     ~Sprite();
 
@@ -22,9 +22,9 @@ class Sprite
      *
      * @return SDL_Texture*
      */
-    SDL_Texture *get_texture() const
+    std::uint32_t const *get_data() const
     {
-        return m_sprite;
+        return m_data;
     }
 
     /**
@@ -38,8 +38,21 @@ class Sprite
     }
 
   private:
-    SDL_Texture *m_sprite{nullptr};
+    std::uint32_t *m_data{nullptr};
+    int m_texture_width{0};
+    int m_texture_height{0};
     Library::Vector_2D m_dimensions{0, 0};
+
+  public:
+    int texture_width() const
+    {
+        return m_texture_width;
+    }
+
+    int texture_height() const
+    {
+        return m_texture_height;
+    }
 };
 
 } // namespace PS::System::Graphics

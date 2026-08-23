@@ -1,0 +1,51 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Configure PSP debug build",
+      "type": "shell",
+      "command": "psp-cmake",
+      "options": {
+        "cwd": "${workspaceFolder}/build"
+      },
+      "args": ["..", "-DPSP_DEBUG_PRX=ON"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Build PSP debug PRX",
+      "type": "shell",
+      "command": "make",
+      "options": {
+        "cwd": "${workspaceFolder}/build"
+      },
+      "args": [],
+      "dependsOn": "Configure PSP debug build",
+      "dependsOrder": "sequence",
+      "problemMatcher": []
+    },
+    {
+      "label": "Reset PSPLink debug target",
+      "type": "shell",
+      "command": "pspsh",
+      "args": ["-e", "reset"],
+      "options": {
+        "cwd": "${workspaceFolder}/build"
+      },
+      "dependsOn": "Build PSP debug PRX",
+      "dependsOrder": "sequence",
+      "problemMatcher": []
+    },
+    {
+      "label": "Start PSPLink debug target",
+      "type": "shell",
+      "command": "pspsh",
+      "args": ["-e", "debug DinoGame.prx"],
+      "options": {
+        "cwd": "${workspaceFolder}/build"
+      },
+      "dependsOn": "Reset PSPLink debug target",
+      "dependsOrder": "sequence",
+      "problemMatcher": []
+    }
+  ]
+}

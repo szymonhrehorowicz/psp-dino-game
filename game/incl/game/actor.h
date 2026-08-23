@@ -11,7 +11,6 @@
 
 #pragma once
 
-#include "SDL3/SDL_rect.h"
 #include "config.h"
 #include "library/action.h"
 #include "library/coordinates.h"
@@ -34,7 +33,7 @@ class Actor
      *
      * @param rectangle - inital rectangle of an Actor
      */
-    explicit Actor(SDL_FRect rectangle, Config::Sprites sprite) : m_rectangle(rectangle), m_sprite(sprite) {};
+    explicit Actor(Library::Rectangle rectangle, Config::Sprites sprite) : m_rectangle(rectangle), m_sprite(sprite) {};
 
     /**
      * @brief Executes registered action if any in the queue.
@@ -68,9 +67,9 @@ class Actor
     /**
      * @brief Get (X,Y,W,H) rectangle of an Actor
      *
-     * @return SDL_FRect const&
+     * @return Library::Rectangle const&
      */
-    SDL_FRect const &get_rectangle() const
+    Library::Rectangle const &get_rectangle() const
     {
         return m_rectangle;
     }
@@ -78,9 +77,9 @@ class Actor
     /**
      * @brief Get (X,Y,W,H) rectangle of an Actor
      *
-     * @return SDL_FRect&
+     * @return Library::Rectangle&
      */
-    SDL_FRect &get_rectangle()
+    Library::Rectangle &get_rectangle()
     {
         return m_rectangle;
     }
@@ -113,7 +112,7 @@ class Actor
     }
 
   private:
-    SDL_FRect m_rectangle;
+    Library::Rectangle m_rectangle;
     Config::Sprites m_sprite;
     std::vector<std::unique_ptr<Library::Action>> m_actions{};
 };

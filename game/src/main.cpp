@@ -2,24 +2,24 @@
 #include "game/engine.h"
 #include "game/graphics_engine.h"
 #include "game/state_machine.h"
-#include <SDL3/SDL.h>
-#include <SDL3/SDL_main.h>
+#include "system/exit.h"
+#include <pspuser.h>
+
+PSP_MODULE_INFO("DinoGame", 0, 1, 0);
+PSP_MAIN_THREAD_ATTR(THREAD_ATTR_VFPU | THREAD_ATTR_USER);
 
 int main(int /*argc*/, char * /*argv*/[])
 {
     using namespace PS;
 
-    // [SDL]
-    if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD))
-    {
-        SDL_Log("Couldn't initialize SDL: %s", SDL_GetError());
-        return 1;
-    }
+    System::exit_init();
 
     Game::Controller_Manager controller_manager{};
     Game::State_Machine state_machine{controller_manager};
     Game::Graphics_Engine graphics_engine{};
 
+    graphics_engine.clear_screen_color(0xFF0000); // solid red
+    graphics_engine.present();
     // [SCENE]
     graphics_engine.load_sprite(Game::Config::Sprites::PLAYER, Game::Config::PLAYER_SPRITE);
     graphics_engine.load_sprite(Game::Config::Sprites::PLAYER_DEAD, Game::Config::PLAYER_DEAD_SPRITE);
@@ -35,42 +35,14 @@ int main(int /*argc*/, char * /*argv*/[])
     engine.on_game_end().connect(&state_machine, &Game::State_Machine::set_game_ended);
     state_machine.on_game_start().connect(&engine, &Game::Engine::start_game);
 
-    int running = 1;
-    SDL_Event event;
-
-    while (running)
+    while (System::running)
     {
-        // [SDL]
-        if (SDL_PollEvent(&event))
-        {
-            switch (event.type)
-            {
-            case SDL_EVENT_QUIT:
-                // End the loop if the programs is being closed
-                running = 0;
-                break;
-            case SDL_EVENT_GAMEPAD_ADDED:
-                // Connect a controller when it is connected
-                SDL_OpenGamepad(event.cdevice.which);
-                break;
-            case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
-                if (event.gbutton.button == SDL_GAMEPAD_BUTTON_START)
-                {
-                    // Close the program if start is pressed
-                    running = 0;
-                }
-                break;
-            }
-        }
-
-        // [GAME]
         controller_manager.update();
         state_machine.update();
         engine.update();
         graphics_engine.update(state_machine.get_state(), engine.get_actors(), engine.get_score());
+        sceKernelDelayThread(32000);
     }
-
-    SDL_Quit();
 
     return 0;
 }

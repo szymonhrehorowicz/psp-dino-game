@@ -11,8 +11,8 @@
 
 #pragma once
 
-#include "SDL3/SDL_rect.h"
 #include "library/action.h"
+#include "library/coordinates.h"
 
 namespace PS
 {
@@ -28,7 +28,7 @@ namespace Game
 class Move_Left_Action : public Library::Action
 {
   public:
-    Move_Left_Action(SDL_FRect &rectangle);
+    Move_Left_Action(Library::Rectangle &rectangle);
 
     /**
      * @brief Executes an action of moving left by a single predefined step.

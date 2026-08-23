@@ -41,7 +41,7 @@ class Engine
         : m_controller_manager(controller_manager), m_player_dimensions(player_dimensions),
           m_dead_player_dimensions(dead_player_dimensions), m_obstacle_dimensions(obstacle_dimensions)
     {
-        m_obstacle_position_generator.set_period(100);
+        m_obstacle_position_generator.set_period(25);
         m_obstacle_position_generator.set_starting_x(Config::SCREEN_WIDTH + obstacle_dimensions.x);
 
         int const lower_level = Config::OBSTACLE_POSITION_Y;

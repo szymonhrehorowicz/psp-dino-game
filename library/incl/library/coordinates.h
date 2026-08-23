@@ -26,4 +26,12 @@ struct Vector_2D
     Vector_2D(Vector_2D const &other) : x{other.x}, y{other.y} {};
 };
 
+struct Rectangle
+{
+    float x{};
+    float y{};
+    float w{};
+    float h{};
+};
+
 } // namespace PS::Library

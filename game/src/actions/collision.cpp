@@ -3,7 +3,7 @@
 namespace PS::Game
 {
 
-Collision_Action::Collision_Action(SDL_FRect &rectangle, Library::Vector_2D dimensions, Config::Sprites &sprite,
+Collision_Action::Collision_Action(Library::Rectangle &rectangle, Library::Vector_2D dimensions, Config::Sprites &sprite,
                                    Config::Sprites collision_sprite)
 {
     float const bottom = rectangle.y + rectangle.h;

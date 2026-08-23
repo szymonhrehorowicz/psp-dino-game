@@ -31,7 +31,7 @@ template <typename Enum> class Sprite_Manager
                   "Enum_Array requires a scoped enum class");
 
   public:
-    Sprite_Manager(SDL_Renderer &renderer) : m_renderer(renderer) {};
+    Sprite_Manager() = default;
 
     /**
      * @brief Creates new sprite and stores it.
@@ -44,7 +44,7 @@ template <typename Enum> class Sprite_Manager
         auto &sprite = m_sprites[value];
         assert(!sprite);
 
-        sprite = std::make_unique<Sprite>(m_renderer, file);
+        sprite = std::make_unique<Sprite>(file);
     }
 
     /**
@@ -76,7 +76,6 @@ template <typename Enum> class Sprite_Manager
     }
 
   private:
-    SDL_Renderer &m_renderer;
     Library::Enum_Array<Enum, std::unique_ptr<Sprite>> m_sprites;
 };
 
