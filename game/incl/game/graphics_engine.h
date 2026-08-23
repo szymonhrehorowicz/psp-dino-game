@@ -15,6 +15,7 @@
 #include "SDL3/SDL_video.h"
 #include "engine_defines.h"
 #include "game/config.h"
+#include "game/state_machine_defines.h"
 #include "system/exceptions.h"
 #include "system/graphics/color.h"
 #include "system/graphics/sprite_manager.h"
@@ -60,20 +61,51 @@ class Graphics_Engine
         return m_sprite_manager->get_sprite(sprite).get_dimensions();
     }
 
-    void update(Actors const &actors)
+    void update(States state, Actors const &actors)
     {
         render_background();
 
-        for (auto const &actor : actors)
+        switch (state)
         {
-            auto const &sprite = m_sprite_manager->get_sprite(actor.ptr->get_sprite());
-            SDL_RenderTexture(m_renderer.get(), sprite.get_texture(), nullptr, &actor.ptr->get_rectangle());
+        case States::START: {
+            render_start_screen();
+        }
+        break;
+        case States::GAME: {
+            for (auto const &actor : actors)
+            {
+                auto const &sprite = m_sprite_manager->get_sprite(actor.ptr->get_sprite());
+                SDL_RenderTexture(m_renderer.get(), sprite.get_texture(), nullptr, &actor.ptr->get_rectangle());
+            }
+        }
+        break;
+        case States::END: {
+            render_death_screen();
+        }
+        break;
+        default:
+            assert(false);
+            break;
         }
 
         SDL_RenderPresent(m_renderer.get());
     }
 
   private:
+    void render_start_screen()
+    {
+        SDL_SetRenderDrawColor(m_renderer.get(), 0, 0, 0, 255);
+        SDL_RenderDebugText(m_renderer.get(), 200.0F, 72.0F, "Dino Game");
+        SDL_RenderDebugText(m_renderer.get(), 168.0F, 104.0F, "Press \"X\" to start");
+    }
+
+    void render_death_screen()
+    {
+        SDL_SetRenderDrawColor(m_renderer.get(), 0, 0, 0, 255);
+        SDL_RenderDebugText(m_renderer.get(), 200.0F, 72.0F, "You have died!");
+        SDL_RenderDebugText(m_renderer.get(), 168.0F, 104.0F, "Press \"X\" to restart");
+    }
+
     void render_sky()
     {
         SDL_SetRenderDrawColor(m_renderer.get(), Config::SKY_COLOR.r, Config::SKY_COLOR.g, Config::SKY_COLOR.b,
