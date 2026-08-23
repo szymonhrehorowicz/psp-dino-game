@@ -72,15 +72,12 @@ class Graphics_Engine
         }
         break;
         case States::GAME: {
-            for (auto const &actor : actors)
-            {
-                auto const &sprite = m_sprite_manager->get_sprite(actor.ptr->get_sprite());
-                SDL_RenderTexture(m_renderer.get(), sprite.get_texture(), nullptr, &actor.ptr->get_rectangle());
-            }
+            render_actors(actors);
         }
         break;
         case States::END: {
             render_death_screen();
+            render_actors(actors);
         }
         break;
         default:
@@ -104,6 +101,15 @@ class Graphics_Engine
         SDL_SetRenderDrawColor(m_renderer.get(), 0, 0, 0, 255);
         SDL_RenderDebugText(m_renderer.get(), 200.0F, 72.0F, "You have died!");
         SDL_RenderDebugText(m_renderer.get(), 168.0F, 104.0F, "Press \"X\" to restart");
+    }
+
+    void render_actors(Actors const &actors)
+    {
+        for (auto actor = actors.rbegin(); actor != actors.rend(); ++actor)
+        {
+            auto const &sprite = m_sprite_manager->get_sprite(actor->ptr->get_sprite());
+            SDL_RenderTexture(m_renderer.get(), sprite.get_texture(), nullptr, &actor->ptr->get_rectangle());
+        }
     }
 
     void render_sky()

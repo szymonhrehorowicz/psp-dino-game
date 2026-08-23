@@ -73,31 +73,29 @@ class Engine
             // Collisions
             m_collision_detector.update(m_actors);
 
-            if (m_collision_detected)
+            if (!m_collision_detected)
             {
-                clear_actors();
-            }
-
-            // Cleanup
-            for (auto it = m_actors.begin(); it != m_actors.end();)
-            {
-                if (it->ptr->get_sprite() == Config::Sprites::OBSTACLE)
+                // Cleanup
+                for (auto it = m_actors.begin(); it != m_actors.end();)
                 {
-                    auto const &rectangle = it->ptr->get_rectangle();
-
-                    if (rectangle.x + rectangle.w <= 0)
+                    if (it->ptr->get_sprite() == Config::Sprites::OBSTACLE)
                     {
-                        m_game_tick.disconnect(it->signals[Config::Signals::GAME_TICK]);
-                        it = m_actors.erase(it);
+                        auto const &rectangle = it->ptr->get_rectangle();
+
+                        if (rectangle.x + rectangle.w <= 0)
+                        {
+                            m_game_tick.disconnect(it->signals[Config::Signals::GAME_TICK]);
+                            it = m_actors.erase(it);
+                        }
+                        else
+                        {
+                            ++it;
+                        }
                     }
                     else
                     {
                         ++it;
                     }
-                }
-                else
-                {
-                    ++it;
                 }
             }
         }
@@ -121,6 +119,7 @@ class Engine
     void start_game()
     {
         m_is_game_running = true;
+        clear_actors();
         add_player();
     }
 
