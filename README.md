@@ -2,6 +2,8 @@
 
 ## Game
 
+![Death screen](./docs/media/death_screen.png "Death screen")
+
 Game for Sony PlayStation Portable. Inspired by [Dinosaur Game — Chrome Dino T-Rex Runner](https://chromedino.com/).
 
 ## Development

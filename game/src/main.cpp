@@ -67,7 +67,7 @@ int main(int /*argc*/, char * /*argv*/[])
         controller_manager.update();
         state_machine.update();
         engine.update();
-        graphics_engine.update(state_machine.get_state(), engine.get_actors());
+        graphics_engine.update(state_machine.get_state(), engine.get_actors(), engine.get_score());
     }
 
     SDL_Quit();

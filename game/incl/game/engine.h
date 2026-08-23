@@ -51,6 +51,8 @@ class Engine
 
         int const game_collision_signal_id = m_collision_detector.on_collision().connect(this, &Engine::on_collision);
         m_collision_detector.set_engine_signal_id(game_collision_signal_id);
+
+        m_game_tick.connect(this, &Engine::increment_score);
     };
 
     /**
@@ -119,8 +121,14 @@ class Engine
     void start_game()
     {
         m_is_game_running = true;
+        m_score = 0;
         clear_actors();
         add_player();
+    }
+
+    int get_score() const
+    {
+        return m_score;
     }
 
   private:
@@ -209,6 +217,11 @@ class Engine
         m_collision_detected = false;
     }
 
+    void increment_score()
+    {
+        ++m_score;
+    }
+
     Controller_Manager &m_controller_manager;
 
     Library::Vector_2D m_player_dimensions;
@@ -224,6 +237,7 @@ class Engine
 
     bool m_is_game_running{false};
     bool m_collision_detected{false};
+    int m_score{0};
 };
 
 } // namespace PS::Game

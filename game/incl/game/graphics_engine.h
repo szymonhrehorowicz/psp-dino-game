@@ -20,6 +20,7 @@
 #include "system/graphics/color.h"
 #include "system/graphics/sprite_manager.h"
 #include <cassert>
+#include <cstdio>
 #include <memory>
 
 namespace PS::Game
@@ -61,7 +62,7 @@ class Graphics_Engine
         return m_sprite_manager->get_sprite(sprite).get_dimensions();
     }
 
-    void update(States state, Actors const &actors)
+    void update(States state, Actors const &actors, int score)
     {
         render_background();
 
@@ -73,11 +74,13 @@ class Graphics_Engine
         break;
         case States::GAME: {
             render_actors(actors);
+            render_score(score);
         }
         break;
         case States::END: {
             render_death_screen();
             render_actors(actors);
+            render_score(score);
         }
         break;
         default:
@@ -101,6 +104,14 @@ class Graphics_Engine
         SDL_SetRenderDrawColor(m_renderer.get(), 0, 0, 0, 255);
         SDL_RenderDebugText(m_renderer.get(), 200.0F, 72.0F, "You have died!");
         SDL_RenderDebugText(m_renderer.get(), 168.0F, 104.0F, "Press \"X\" to restart");
+    }
+
+    void render_score(int score)
+    {
+        char score_text[32];
+        std::snprintf(score_text, sizeof(score_text), "Score: %d", score);
+        SDL_SetRenderDrawColor(m_renderer.get(), 0, 0, 0, 255);
+        SDL_RenderDebugText(m_renderer.get(), 16.0F, 16.0F, score_text);
     }
 
     void render_actors(Actors const &actors)

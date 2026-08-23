@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.11)
 
-project(hello)
+project(DinoGame)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 set(CMAKE_CXX_STANDARD 17)
