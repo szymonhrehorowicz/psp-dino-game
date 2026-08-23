@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <optional>
 
 namespace PS::Game
 {
@@ -51,6 +52,10 @@ template <int Width, int Height> class Collision_Detector
                         auto const &other_actor = actors.at(m_map[y][x] - 1);
                         emit_collision(actor);
                         emit_collision(other_actor);
+                        if (m_engine_signal_id.has_value())
+                        {
+                            emit_collision(m_engine_signal_id.value());
+                        }
                         has_collided = true;
                     }
                     m_map[y][x] = index;
@@ -71,18 +76,29 @@ template <int Width, int Height> class Collision_Detector
         return m_map;
     }
 
+    void set_engine_signal_id(int id)
+    {
+        m_engine_signal_id = id;
+    }
+
   private:
     void emit_collision(Actor_Data const &actor)
     {
         auto const collision_signal = actor.signals.find(Config::Signals::COLLISION);
         if (collision_signal != actor.signals.end())
         {
-            m_collision_signal.emit(collision_signal->second);
+            emit_collision(collision_signal->second);
         }
+    }
+
+    void emit_collision(int id)
+    {
+        m_collision_signal.emit(id);
     }
 
     Map m_map{};
     Library::Signal<> m_collision_signal{};
+    std::optional<int> m_engine_signal_id{std::nullopt};
 };
 
 } // namespace PS::Game

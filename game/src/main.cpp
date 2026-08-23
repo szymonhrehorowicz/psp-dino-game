@@ -1,6 +1,7 @@
 #include "game/config.h"
 #include "game/engine.h"
 #include "game/graphics_engine.h"
+#include "game/state_machine.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
@@ -15,6 +16,8 @@ int main(int /*argc*/, char * /*argv*/[])
         return 1;
     }
 
+    Game::Controller_Manager controller_manager{};
+    Game::State_Machine state_machine{controller_manager};
     Game::Graphics_Engine graphics_engine{};
 
     // [SCENE]
@@ -23,10 +26,14 @@ int main(int /*argc*/, char * /*argv*/[])
     graphics_engine.load_sprite(Game::Config::Sprites::OBSTACLE, Game::Config::OBSTACLE_SPRITE);
 
     // [ENGINE]
-    Game::Engine engine{graphics_engine.sprite_dimensions(Game::Config::Sprites::PLAYER),
+    Game::Engine engine{controller_manager, graphics_engine.sprite_dimensions(Game::Config::Sprites::PLAYER),
                         graphics_engine.sprite_dimensions(Game::Config::Sprites::PLAYER_DEAD),
                         graphics_engine.sprite_dimensions(Game::Config::Sprites::OBSTACLE)};
-    engine.add_player();
+    // engine.add_player();
+
+    // [SIGNALS]
+    engine.on_game_end().connect(&state_machine, &Game::State_Machine::set_game_ended);
+    state_machine.on_game_start().connect(&engine, &Game::Engine::start_game);
 
     int running = 1;
     SDL_Event event;
@@ -57,7 +64,8 @@ int main(int /*argc*/, char * /*argv*/[])
         }
 
         // [GAME]
-
+        controller_manager.update();
+        state_machine.update();
         engine.update();
         graphics_engine.update(engine.get_actors());
     }

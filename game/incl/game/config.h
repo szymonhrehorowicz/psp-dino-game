@@ -61,6 +61,7 @@ enum class Signals
 {
     GAME_TICK = 0,
     COLLISION = 1,
+    BUTTON_CROSS = 2,
 };
 
 } // namespace PS::Game::Config

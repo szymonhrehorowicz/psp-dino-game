@@ -36,10 +36,10 @@ namespace PS::Game
 class Engine
 {
   public:
-    Engine(Library::Vector_2D player_dimensions, Library::Vector_2D dead_player_dimensions,
-           Library::Vector_2D obstacle_dimensions)
-        : m_player_dimensions(player_dimensions), m_dead_player_dimensions(dead_player_dimensions),
-          m_obstacle_dimensions(obstacle_dimensions)
+    Engine(Controller_Manager &controller_manager, Library::Vector_2D player_dimensions,
+           Library::Vector_2D dead_player_dimensions, Library::Vector_2D obstacle_dimensions)
+        : m_controller_manager(controller_manager), m_player_dimensions(player_dimensions),
+          m_dead_player_dimensions(dead_player_dimensions), m_obstacle_dimensions(obstacle_dimensions)
     {
         m_obstacle_position_generator.set_period(100);
         m_obstacle_position_generator.set_starting_x(Config::SCREEN_WIDTH + obstacle_dimensions.x);
@@ -48,6 +48,9 @@ class Engine
         int const upper_level = lower_level - m_player_dimensions.y;
         m_obstacle_position_generator.set_levels(lower_level, upper_level);
         m_obstacle_position_generator.on_new_obstacle().connect(this, &Engine::add_obstacle);
+
+        int const game_collision_signal_id = m_collision_detector.on_collision().connect(this, &Engine::on_collision);
+        m_collision_detector.set_engine_signal_id(game_collision_signal_id);
     };
 
     /**
@@ -56,39 +59,46 @@ class Engine
      */
     void update()
     {
-        m_controller_manager.update();
-        m_obstacle_position_generator.update();
-        m_game_tick.emit();
-
-        // Animations
-        for (auto &actor : m_actors)
+        if (m_is_game_running)
         {
-            actor.ptr->animate();
-        }
+            m_obstacle_position_generator.update();
+            m_game_tick.emit();
 
-        // Collisions
-        m_collision_detector.update(m_actors);
-
-        // Cleanup
-        for (auto it = m_actors.begin(); it != m_actors.end();)
-        {
-            if (it->ptr->get_sprite() == Config::Sprites::OBSTACLE)
+            // Animations
+            for (auto &actor : m_actors)
             {
-                auto const &rectangle = it->ptr->get_rectangle();
+                actor.ptr->animate();
+            }
 
-                if (rectangle.x + rectangle.w <= 0)
+            // Collisions
+            m_collision_detector.update(m_actors);
+
+            if (m_collision_detected)
+            {
+                clear_actors();
+            }
+
+            // Cleanup
+            for (auto it = m_actors.begin(); it != m_actors.end();)
+            {
+                if (it->ptr->get_sprite() == Config::Sprites::OBSTACLE)
                 {
-                    m_game_tick.disconnect(it->signals[Config::Signals::GAME_TICK]);
-                    it = m_actors.erase(it);
+                    auto const &rectangle = it->ptr->get_rectangle();
+
+                    if (rectangle.x + rectangle.w <= 0)
+                    {
+                        m_game_tick.disconnect(it->signals[Config::Signals::GAME_TICK]);
+                        it = m_actors.erase(it);
+                    }
+                    else
+                    {
+                        ++it;
+                    }
                 }
                 else
                 {
                     ++it;
                 }
-            }
-            else
-            {
-                ++it;
             }
         }
     }
@@ -103,6 +113,18 @@ class Engine
         return m_actors;
     }
 
+    Library::Signal<> &on_game_end()
+    {
+        return m_game_end;
+    }
+
+    void start_game()
+    {
+        m_is_game_running = true;
+        add_player();
+    }
+
+  private:
     /**
      * @brief Add player.
      *
@@ -113,18 +135,17 @@ class Engine
 
         player->set_dimensions(m_player_dimensions);
 
-        m_controller_manager.on_button_pressed(PspCtrlButtons::PSP_CTRL_CROSS)
-            .connect(player.get(), &Game::Player::jump);
+        int const on_jump_id = m_controller_manager.on_button_pressed(PspCtrlButtons::PSP_CTRL_CROSS)
+                                   .connect(player.get(), &Game::Player::jump);
 
         int const on_collision_id = m_collision_detector.on_collision().connect(player.get(), &Player::die);
 
         m_actors.emplace_back(Actor_Data{
             .ptr = std::move(player),
-            .signals = {{Config::Signals::COLLISION, on_collision_id}},
+            .signals = {{Config::Signals::COLLISION, on_collision_id}, {Config::Signals::BUTTON_CROSS, on_jump_id}},
         });
     }
 
-  private:
     /**
      * @brief Add new obstacle.
      *
@@ -147,16 +168,63 @@ class Engine
         });
     }
 
+    void on_collision()
+    {
+        if (m_collision_detected)
+        {
+            return;
+        }
+
+        m_is_game_running = false;
+        m_collision_detected = true;
+        m_game_end.emit();
+    }
+
+    void clear_actors()
+    {
+        for (auto it = m_actors.begin(); it != m_actors.end();)
+        {
+            for (auto &signal : it->signals)
+            {
+                if (signal.first == Config::Signals::GAME_TICK)
+                {
+                    m_game_tick.disconnect(signal.second);
+                    continue;
+                }
+
+                if (signal.first == Config::Signals::COLLISION)
+                {
+                    m_collision_detector.on_collision().disconnect(signal.second);
+                    continue;
+                }
+
+                if (signal.first == Config::Signals::BUTTON_CROSS)
+                {
+                    m_controller_manager.on_button_pressed(PspCtrlButtons::PSP_CTRL_CROSS).disconnect(signal.second);
+                }
+            }
+
+            it = m_actors.erase(it);
+        }
+
+        m_collision_detected = false;
+    }
+
+    Controller_Manager &m_controller_manager;
+
     Library::Vector_2D m_player_dimensions;
     Library::Vector_2D m_dead_player_dimensions;
     Library::Vector_2D m_obstacle_dimensions;
 
-    Controller_Manager m_controller_manager{};
     Library::Obstacle_Position_Generator m_obstacle_position_generator{};
     Collision_Detector<Game::Config::SCREEN_WIDTH, Game::Config::SCREEN_HEIGHT> m_collision_detector{};
 
     Actors m_actors{};
     Library::Signal<> m_game_tick{};
+    Library::Signal<> m_game_end{};
+
+    bool m_is_game_running{false};
+    bool m_collision_detected{false};
 };
 
 } // namespace PS::Game
